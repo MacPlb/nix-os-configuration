@@ -24,7 +24,7 @@
     pkgs-unstable.jetbrains.pycharm
     pkgs-unstable.jetbrains.rider
     pkgs-unstable.zed-editor
-    neovim
+    pkgs-unstable.neovim
     vscode
 
     # Languages
