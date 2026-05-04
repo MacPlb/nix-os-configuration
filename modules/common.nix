@@ -2,7 +2,7 @@
 
 { 
     # Garbage collection
-    nix.gc.automatic = false
+    nix.gc.automatic = false;
     
     # Store optimazation
     nix.settings.auto-optimise-store = true;

@@ -12,5 +12,8 @@
 
     #recording
     obs-studio
+
+    #Video
+    mpv
   ];
 }
