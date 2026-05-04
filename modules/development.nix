@@ -31,6 +31,6 @@
     python3
     go
     rustup
-   
+    gcc
   ];
 }
