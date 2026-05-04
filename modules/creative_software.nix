@@ -11,6 +11,6 @@
     shotcut
 
     #recording
-    obs
+    obs-studio
   ];
 }

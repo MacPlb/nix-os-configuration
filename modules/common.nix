@@ -2,11 +2,7 @@
 
 { 
     # Garbage collection
-    nix.gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 7d";
-    };
+    nix.gc.automatic = false
     
     # Store optimazation
     nix.settings.auto-optimise-store = true;
@@ -39,5 +35,8 @@
         nrun      = "nix run";
         cls       = "clear";
     };
+
+    #Env variables
+    environment.variables.FLAKE = "/etc/nixos";
 
 }

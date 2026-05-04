@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 { 
   # Git Setup
@@ -21,14 +21,14 @@
     ripgrep
 
     # IDE
-    jetbrains.rider
-    jetbrains.pycharm
+    pkgs-unstable.jetbrains.pycharm
+    pkgs-unstable.jetbrains.rider
+    pkgs-unstable.zed-editor
     neovim
     vscode
-    zed
 
     # Languages
-    python315
+    python3
     go
     rustup
    
