@@ -25,17 +25,13 @@
     waybar
     mako
     swww
-    rofi-wayland
+    wofi
     networkmanagerapplet
     pavucontrol
     wl-clipboard
-
-    # Screenshot tools
     grim
     slurp
     swappy
-
-    # Clipboard manager
     cliphist
   ];
 
@@ -47,4 +43,9 @@
     pulse.enable = true;
     jack.enable = true;
   };
+
+  fonts.packages = with pkgs; [
+    nerdfonts
+    font-awesome
+  ];
 }

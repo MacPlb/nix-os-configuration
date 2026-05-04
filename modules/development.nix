@@ -1,6 +1,6 @@
-{ config, pkgs, pkgs-unstable, ... }:
+{ pkgs, pkgs-unstable, ... }:
 
-{ 
+{
   # Git Setup
   programs.git = {
     enable = true;
@@ -32,5 +32,9 @@
     go
     rustup
     gcc
+
+    # NIX
+    nil
+    nixd
   ];
 }

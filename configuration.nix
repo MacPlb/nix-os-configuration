@@ -1,8 +1,8 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   imports =
-    [ 
+    [
       ./hardware-configuration.nix
       ./modules/development.nix
       ./modules/common.nix
@@ -18,7 +18,7 @@
   # Features
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  networking.hostName = "nietzsche"; 
+  networking.hostName = "nietzsche";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Warsaw";
@@ -43,7 +43,7 @@
       variant = "";
     };
   };
-  
+
   console.keyMap = "pl2";
 
   services.printing.enable = false;
@@ -56,16 +56,14 @@
     pulse.enable = true;
     jack.enable = true;
   };
- 
+
   users.users.friedrich = {
     isNormalUser = true;
     description = "Friedrich";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
   };
 
-  programs.firefox.enable = true;
   nixpkgs.config.allowUnfree = true;
 
-  system.stateVersion = "24.11"; 
+  system.stateVersion = "24.11";
 }
