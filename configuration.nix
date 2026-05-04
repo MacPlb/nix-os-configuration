@@ -5,6 +5,8 @@
     [ 
       ./hardware-configuration.nix
       ./modules/development.nix
+      ./modules/common.nix
+      ./modules/creative_software.nix
     ];
 
   # Bootloader.

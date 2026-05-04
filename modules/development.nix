@@ -24,7 +24,8 @@
     jetbrains.rider
     jetbrains.pycharm
     neovim
-    vscode 
+    vscode
+    zed
 
     # Languages
     python315
