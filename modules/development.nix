@@ -4,12 +4,16 @@
   # Git Setup
   programs.git = {
     enable = true;
-    config.user = {
-        name  = "PyDotDog";
+    config = {
+      user = {
+        name = "PyDotDog";
         email = "palubickimaciej5@gmail.com";
+      };
+      core = {
+        sshCommand = "ssh -i ~/.ssh/id_ed25519";
+      };
     };
   };
-
 
   environment.systemPackages = with pkgs; [
     # Utils
