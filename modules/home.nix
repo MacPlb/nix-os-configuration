@@ -47,12 +47,10 @@
           output = [ "HDMI-A-1" ];
           layer = "top";
           position = "top";
-          # Reduced margins of the whole bar (from 10 20 0 20 to 6 15 0 15)
           margin = "6 15 0 15";
-          spacing = 6; # Reduced spacing
+          spacing = 6;
 
           # --- MODULES LAYOUT ---
-          # Date and Tray (background icons, e.g., Discord) moved to the left
           modules-left = [ "custom/nixos" "clock#date" "tray" "hyprland/workspaces" "mpris" ];
           modules-center = [ "clock" ];
           modules-right = [ "cpu" "memory" "temperature" "backlight" "pulseaudio" "network" "bluetooth" "battery" "custom/power" ];
@@ -61,15 +59,13 @@
           "custom/nixos" = {
             format = "";
             tooltip = false;
-            on-click = "wofi --show drun";
+            on-click = "pkill wofi || wofi --show drun";
           };
 
           # Separate module for the date on the left side
           "clock#date" = {
             format = "  {:%d %B %Y}";
             tooltip-format = "<tt><small>{calendar}</small></tt>";
-            # If you have a system calendar, e.g., gnome-calendar, you can link it here:
-            # on-click = "gnome-calendar";
           };
 
           "tray" = {
