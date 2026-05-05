@@ -63,6 +63,12 @@
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
+
+  #Bluetooth
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+
   nixpkgs.config.allowUnfree = true;
 
   system.stateVersion = "24.11";
