@@ -43,9 +43,4 @@
     pulse.enable = true;
     jack.enable = true;
   };
-
-  fonts.packages = with pkgs; [
-    nerdfonts
-    font-awesome
-  ];
 }

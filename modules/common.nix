@@ -1,9 +1,9 @@
-{ config, pkgs, ... }:
+{ ... }:
 
-{ 
+{
     # Garbage collection
     nix.gc.automatic = false;
-    
+
     # Store optimazation
     nix.settings.auto-optimise-store = true;
 
@@ -12,7 +12,7 @@
 
     programs.nh = {
         enable = true;
-        flake = "/etc/nixos"; 
+        flake = "/etc/nixos";
             clean = {
             enable = true;
             extraArgs = "--keep-since 7d --keep 3";
@@ -29,7 +29,7 @@
         nixgc     = "nh clean all";
         nixclean  = "nh clean all --keep-since 7d --keep 3";
         nixopt    = "nix-store --optimise";
-        
+
         nshell    = "nix-shell -p";
         nsearch   = "nix search nixpkgs";
         nrun      = "nix run";

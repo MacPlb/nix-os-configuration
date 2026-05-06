@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   home.username = "friedrich";
@@ -24,6 +24,8 @@
           sensitivity  = 0;
         };
 
+
+        # Keymap Hyperland
         "$mod" = "SUPER";
 
         bind = [
@@ -40,7 +42,11 @@
         ];
 
         exec-once = [
+
+          # Wallpaper demon
           "swww init"
+
+          # Clipboard deamon
           "wl-paste --type text --watch cliphist store"
           "wl-paste --type image --watch cliphist store"
         ];
@@ -231,8 +237,8 @@
 
     # Wallpaper package package
     swww
-    nerdfonts
   ];
 
+  # Enable himemanager
   programs.home-manager.enable = true;
 }
