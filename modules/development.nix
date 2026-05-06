@@ -25,6 +25,7 @@
     pkgs-unstable.jetbrains.rider
     pkgs-unstable.zed-editor
     pkgs-unstable.neovim
+    antigravity
     vscode
 
     # Languages

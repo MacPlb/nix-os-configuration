@@ -7,7 +7,7 @@
       ./modules/development.nix
       ./modules/common.nix
       ./modules/creative_software.nix
-      ./modules/hyperland.nix
+      ./modules/niri.nix
       ./modules/other.nix
     ];
 
