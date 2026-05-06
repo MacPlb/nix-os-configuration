@@ -33,6 +33,7 @@
     slurp
     swappy
     cliphist
+    quickshell
   ];
 
   security.rtkit.enable = true;

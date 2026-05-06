@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports =
@@ -23,6 +23,18 @@
 
   time.timeZone = "Europe/Warsaw";
   i18n.defaultLocale = "en_US.UTF-8";
+
+
+  # Fonts
+  fonts = {
+      fontDir.enable = true;
+      fontconfig.enable = true;
+
+      packages = [
+        pkgs.nerd-fonts.jetbrains-mono
+        pkgs.nerd-fonts.fira-code
+      ];
+    };
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "pl_PL.UTF-8";
