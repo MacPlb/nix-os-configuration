@@ -10,10 +10,19 @@
       enable = true;
       xwayland.enable = true;
       settings = {
+
+        # Monitor layout and orientation
         monitor = [
           "HDMI-A-1, 3840x2160@120, 0x0, 1.5"
           "HDMI-A-2, 1920x1080@144, auto, 1, transform, 1"
         ];
+
+        # Keyboard input to Polish
+        input = {
+          kb_layout  = "pl";
+          follow_mouse = 1;
+          sensitivity  = 0;
+        };
 
         "$mod" = "SUPER";
 
@@ -22,7 +31,11 @@
           "$mod, R, exec, wofi --show drun"
           "$mod, C, killactive,"
           "$mod, M, exit,"
+
+          # Screenshoot to clipboard
           ", Print, exec, grim -g \"$(slurp)\" - | swappy -f -"
+
+          #Clipboard manager
           "CTRL, grave, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy"
         ];
 
@@ -215,6 +228,8 @@
     swappy
     cliphist
     wl-clipboard
+
+    # Wallpaper package package
     swww
     nerdfonts
   ];
