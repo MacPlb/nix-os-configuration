@@ -42,7 +42,10 @@
     # Network tray applet
     networkmanagerapplet
 
-    # Wallpaper daemon
-    swww
+    # Video wallpaper (mpv-based)
+    mpvpaper
+
+    # Lock screen
+    swaylock-effects
   ];
 }
