@@ -1,0 +1,50 @@
+{ pkgs, ... }:
+
+{
+  programs.niri.settings = {
+    # Prefer server-side decorations for a cleaner look
+    prefer-no-csd = true;
+
+    # Keyboard input — Polish layout
+    input = {
+      keyboard.xkb.layout = "pl";
+      mouse.accel-speed = 0.0;
+    };
+
+    # ----- Animations (Niri defaults with slight speedup) -----
+    animations.slowdown = 0.8;
+
+    # ----- Layout: gaps, borders, no focus ring -----
+    layout = {
+      gaps = 12;
+      center-focused-column = "never";
+      default-column-width = {
+        proportion = 0.5;
+      };
+
+      border = {
+        enable = true;
+        width = 2;
+      };
+
+      focus-ring.enable = false;
+    };
+
+    # ----- Window rules: rounded corners -----
+    window-rules = [
+      {
+        geometry-corner-radius =
+          let
+            r = 8.0;
+          in
+          {
+            bottom-left = r;
+            bottom-right = r;
+            top-left = r;
+            top-right = r;
+          };
+        clip-to-geometry = true;
+      }
+    ];
+  };
+}

@@ -47,7 +47,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
-          home-manager.users.friedrich = import ./modules/home.nix;
+          home-manager.users.friedrich = import ./modules/home;
         }
       ];
     };
