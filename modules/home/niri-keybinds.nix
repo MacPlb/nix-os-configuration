@@ -12,7 +12,7 @@
         "Mod+Q" = spawn [ "kitty" ];
 
         # File manager
-        "Mod+E" = spawn [ "thunar" ];
+        "Mod+E" = spawn [ "nautilus" ];
 
         # Application launcher (Noctalia built-in)
         "Mod+R" = spawn [
