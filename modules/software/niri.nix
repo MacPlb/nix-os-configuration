@@ -44,5 +44,8 @@
 
     # Lock screen
     swaylock-effects
+
+    # Dmenu replacement for wayland (clipboard manager UI)
+    fuzzel
   ];
 }

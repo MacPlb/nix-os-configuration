@@ -4,11 +4,11 @@
   imports =
     [
       ./hardware-configuration.nix
-      ./modules/development.nix
-      ./modules/common.nix
-      ./modules/creative_software.nix
-      ./modules/niri.nix
-      ./modules/other.nix
+      ./modules/software/development.nix
+      ./modules/software/common.nix
+      ./modules/software/creative_software.nix
+      ./modules/software/niri.nix
+      ./modules/software/other.nix
     ];
 
   # Bootloader

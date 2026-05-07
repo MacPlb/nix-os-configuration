@@ -26,7 +26,7 @@
         };
 
         # Quit Niri
-        "Mod+M" = {
+        "Mod+Shift+E" = {
           action.quit = [ ];
         };
 
@@ -41,7 +41,7 @@
         "Ctrl+Grave" = spawn [
           "sh"
           "-c"
-          "cliphist list | wofi --dmenu | cliphist decode | wl-copy"
+          "cliphist list | fuzzel -d | cliphist decode | wl-copy"
         ];
 
         # ----- Vim-style window focus (h/j/k/l) -----
@@ -66,10 +66,10 @@
           action.focus-column-right = [ ];
         };
         "Mod+Up" = {
-          action.focus-window-up = [ ];
+          action.toggle-overview = [ ];
         };
         "Mod+Down" = {
-          action.focus-window-down = [ ];
+          action.close-window = [ ];
         };
 
         # ----- Vim-style window move -----
@@ -119,6 +119,27 @@
         };
         "Mod+Equal" = {
           action.set-column-width = "+10%";
+        };
+
+        # Monitor Navigation
+        "Mod+Tab" = {
+          action.focus-monitor-right = [ ];
+        };
+        "Mod+Shift+Tab" = {
+          action.focus-monitor-left = [ ];
+        };
+
+        # Splitting / Column Control
+        "Mod+Comma" = {
+          action.consume-window-into-column = [ ];
+        };
+        "Mod+Period" = {
+          action.expel-window-from-column = [ ];
+        };
+
+        # Show bindings
+        "Mod+Shift+Slash" = {
+          action.show-hotkey-overlay = [ ];
         };
 
         # Workspace navigation

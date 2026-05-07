@@ -76,6 +76,9 @@
 
       general = {
         enableBlurBehind = false;
+        notifications = {
+          position = "topCenter";
+        };
       };
 
       colorSchemes = {

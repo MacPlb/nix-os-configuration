@@ -25,6 +25,8 @@
       border = {
         enable = true;
         width = 2;
+        active.color = "#8c52ff";
+        inactive.color = "#5c5c5c";
       };
 
       focus-ring.enable = false;

@@ -12,6 +12,7 @@
     ./niri-startup.nix
     ./noctalia.nix
     ./kitty.nix
+    ./fuzzel.nix
   ];
 
   # Enable HomeManager
