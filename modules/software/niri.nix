@@ -47,5 +47,9 @@
 
     # Dmenu replacement for wayland (clipboard manager UI)
     fuzzel
+
+    # File manager
+    xfce.thunar
+    xfce.tumbler
   ];
 }

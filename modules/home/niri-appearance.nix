@@ -5,6 +5,9 @@
     # Prefer server-side decorations for a cleaner look
     prefer-no-csd = true;
 
+    # Disable hotkey cheatsheet overlay on login
+    hotkey-overlay.skip-at-startup = true;
+
     # Keyboard input — Polish layout
     input = {
       keyboard.xkb.layout = "pl";

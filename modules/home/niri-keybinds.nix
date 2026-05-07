@@ -11,6 +11,9 @@
         # Terminal
         "Mod+Q" = spawn [ "kitty" ];
 
+        # File manager
+        "Mod+E" = spawn [ "thunar" ];
+
         # Application launcher (Noctalia built-in)
         "Mod+R" = spawn [
           "noctalia-shell"
@@ -93,6 +96,12 @@
         "Mod+Shift+Right" = {
           action.move-column-right = [ ];
         };
+        "Mod+Shift+Up" = {
+          action.move-window-up = [ ];
+        };
+        "Mod+Shift+Down" = {
+          action.move-window-down = [ ];
+        };
 
         # Move to monitor
         "Mod+Shift+Control+Left" = {
@@ -111,6 +120,21 @@
         # Fullscreen toggle
         "Mod+F" = {
           action.fullscreen-window = [ ];
+        };
+
+        # Maximize column
+        "Mod+Shift+F" = {
+          action.maximize-column = [ ];
+        };
+
+        # Workspace overview
+        "Mod+O" = {
+          action.toggle-overview = [ ];
+        };
+
+        # Cycle preset column widths
+        "Mod+W" = {
+          action.switch-preset-column-width = [ ];
         };
 
         # Resize column width

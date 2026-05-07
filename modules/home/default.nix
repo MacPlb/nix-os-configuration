@@ -13,6 +13,7 @@
     ./noctalia.nix
     ./kitty.nix
     ./fuzzel.nix
+    ./gtk-qt-theme.nix
   ];
 
   # Enable HomeManager
