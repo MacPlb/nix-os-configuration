@@ -18,13 +18,10 @@
   # Packages needed for a complete Niri desktop experience
   environment.systemPackages = with pkgs; [
     # Noctalia desktop shell (bar, notifications, widgets)
-    inputs.noctalia-shell.packages.${pkgs.system}.default
+    inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Terminal
     kitty
-
-    # Application launcher
-    wofi
 
     # Clipboard utilities
     wl-clipboard
