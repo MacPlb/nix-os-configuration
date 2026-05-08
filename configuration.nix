@@ -82,6 +82,22 @@
     ];
   };
 
+  # Extra drive
+  fileSystems."/mnt/sda1" = {
+    device = "/dev/disk/by-uuid/D612174D121731CB";
+    fsType = "ntfs";
+    options = [
+      "defaults"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/mnt/nvme3" = {
+    device = "/dev/disk/by-uuid/B8886DEF886DAD16";
+    fsType = "ntfs";
+    options = [ "defaults" "nofail" ];
+  };
+
   #Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;

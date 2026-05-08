@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -6,7 +6,7 @@
     firefox
     vesktop
     signal-desktop
-    nuclear
     htop
+    rhythmbox
   ];
 }
