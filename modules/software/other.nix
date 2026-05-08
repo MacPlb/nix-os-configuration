@@ -1,8 +1,12 @@
-{  pkgs, ... }:
+{ pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
-   keepassxc
-   firefox
+    keepassxc
+    firefox
+    vesktop
+    signal-desktop
+    nuclear
+    htop
   ];
 }

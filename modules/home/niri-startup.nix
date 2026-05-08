@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   programs.niri.settings = {
@@ -10,7 +10,7 @@
           "-o"
           "no-audio loop --panscan=1.0"
           "*"
-          "/etc/nixos/wallpaper.mp4"
+          "/etc/nixos/static-files/wallpaper.mp4"
         ];
       }
 

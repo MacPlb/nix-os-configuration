@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   home.file.".config/noctalia/settings.json" = {
@@ -40,6 +40,13 @@
             }
           ];
           right = [
+            {
+              id = "Tray";
+              drawerEnabled = false;
+              blacklist = [
+                "nm-applet"
+              ];
+            }
             {
               id = "Volume";
               displayMode = "alwaysShow";

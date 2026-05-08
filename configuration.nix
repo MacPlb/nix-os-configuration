@@ -1,22 +1,24 @@
 { pkgs, ... }:
 
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-      ./modules/software/development.nix
-      ./modules/software/common.nix
-      ./modules/software/creative_software.nix
-      ./modules/software/niri.nix
-      ./modules/software/other.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    ./modules/software/development.nix
+    ./modules/software/common.nix
+    ./modules/software/creative_software.nix
+    ./modules/software/niri.nix
+    ./modules/software/other.nix
+  ];
 
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Features
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   networking.hostName = "nietzsche";
   networking.networkmanager.enable = true;
@@ -24,17 +26,16 @@
   time.timeZone = "Europe/Warsaw";
   i18n.defaultLocale = "en_US.UTF-8";
 
-
   # Fonts
   fonts = {
-      fontDir.enable = true;
-      fontconfig.enable = true;
+    fontDir.enable = true;
+    fontconfig.enable = true;
 
-      packages = [
-        pkgs.nerd-fonts.jetbrains-mono
-        pkgs.nerd-fonts.fira-code
-      ];
-    };
+    packages = [
+      pkgs.nerd-fonts.jetbrains-mono
+      pkgs.nerd-fonts.fira-code
+    ];
+  };
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "pl_PL.UTF-8";
@@ -56,6 +57,9 @@
     };
   };
 
+  # Gnome loagin manager
+  services.displayManager.gdm.enable = true;
+
   console.keyMap = "pl2";
 
   services.printing.enable = false;
@@ -72,14 +76,15 @@
   users.users.friedrich = {
     isNormalUser = true;
     description = "Friedrich";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
-
 
   #Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
-  services.blueman.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 

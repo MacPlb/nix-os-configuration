@@ -36,9 +36,6 @@
     pavucontrol
     playerctl
 
-    # Network tray applet
-    networkmanagerapplet
-
     # Video wallpaper (mpv-based)
     mpvpaper
 
@@ -49,7 +46,6 @@
     fuzzel
 
     # File manager
-    xfce.thunar
-    xfce.tumbler
+    nautilus
   ];
 }
