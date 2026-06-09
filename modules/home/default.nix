@@ -15,6 +15,7 @@
     ./fuzzel.nix
     ./gtk-qt-theme.nix
     ./starship.nix
+    ./neovim.nix
   ];
 
   # Enable HomeManager

@@ -19,12 +19,12 @@
     # Utils
     bat
     ripgrep
+    lazygit
 
     # IDE
     pkgs-unstable.jetbrains.pycharm
     pkgs-unstable.jetbrains.rider
     pkgs-unstable.zed-editor
-    pkgs-unstable.neovim
     zellij
     kiro
     antigravity
