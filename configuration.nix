@@ -104,5 +104,8 @@
 
   nixpkgs.config.allowUnfree = true;
 
+
+  programs.xwayland.enable = true;
+  
   system.stateVersion = "24.11";
 }

@@ -8,5 +8,9 @@
     signal-desktop
     htop
     rhythmbox
+    fastfetch
+    xwayland-satellite
+    pkgs-unstable.spotube
+    pkgs-unstable.yt-dlp
   ];
 }
