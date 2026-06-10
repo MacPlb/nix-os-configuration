@@ -98,6 +98,12 @@
     options = [ "defaults" "nofail" ];
   };
 
+  # USB drive support
+  services.gvfs.enable = true;
+
+  # File manager (enables GSettings schemas needed outside GNOME)
+  programs.nautilus.enable = true;
+
   #Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;

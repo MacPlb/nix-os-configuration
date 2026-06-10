@@ -34,6 +34,8 @@
         nsearch   = "nix search nixpkgs";
         nrun      = "nix run";
         cls       = "clear";
+
+        noctalia-restart = "pkill noctalia-shell; noctalia-shell &disown";
     };
 
     #Env variables

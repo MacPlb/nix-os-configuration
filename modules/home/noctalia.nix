@@ -85,6 +85,8 @@
         enableBlurBehind = false;
         notifications = {
           position = "topCenter";
+          blacklist = [
+          ];
         };
       };
 

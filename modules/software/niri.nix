@@ -45,7 +45,6 @@
     # Dmenu replacement for wayland (clipboard manager UI)
     fuzzel
 
-    # File manager
-    nautilus
+
   ];
 }
