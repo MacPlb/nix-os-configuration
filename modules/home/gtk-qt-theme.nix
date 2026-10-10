@@ -1,11 +1,11 @@
 { pkgs, ... }:
 
 {
-  # ----- GTK dark theme with purple accent -----
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
       gtk-theme = "Adwaita-dark";
+      icon-theme = "Papirus-Dark";
     };
   };
 
@@ -14,6 +14,10 @@
     theme = {
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
     };
 
     gtk3.extraCss = ''
@@ -29,7 +33,6 @@
     '';
   };
 
-  # ----- Qt follows GTK dark theme -----
   qt = {
     enable = true;
     platformTheme.name = "adwaita";

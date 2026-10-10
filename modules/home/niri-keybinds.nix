@@ -1,53 +1,86 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   programs.niri.settings = {
-    # ----- Keybindings -----
     binds =
       let
         spawn = cmd: { action.spawn = cmd; };
+        workspaceBinds =
+          builtins.listToAttrs (
+            builtins.concatMap
+              (workspace:
+                let
+                  key = if workspace == 10 then "0" else builtins.toString workspace;
+                in
+                [
+                  {
+                    name = "Mod+${key}";
+                    value.action.focus-workspace = workspace;
+                  }
+                  {
+                    name = "Mod+Shift+${key}";
+                    value.action.move-column-to-workspace = workspace;
+                  }
+                ])
+              (builtins.genList (index: index + 1) 10)
+          );
       in
       {
-        # Terminal
         "Mod+Q" = spawn [ "kitty" ];
-
-        # File manager
-        "Mod+E" = spawn [ "nautilus" ];
-
-        # Application launcher (Noctalia built-in)
-        "Mod+R" = spawn [
-          "noctalia-shell"
-          "ipc"
-          "call"
-          "launcher"
-          "toggle"
+        "Mod+Return" = spawn [ "kitty" ];
+        "Mod+E" = spawn [ "nemo" ];
+        "Mod+F1" = spawn [ "nemo" ];
+        "Mod+R" = spawn [ "fuzzel" ];
+        "Mod+Space" = spawn [ "fuzzel" ];
+        "Ctrl+L" = spawn [ "${pkgs.gdm}/bin/gdmflexiserver" ];
+        "Mod+B" = spawn [ "firefox" ];
+        "Mod+V" = spawn [
+          "${pkgs.kitty}/bin/kitty"
+          "--class"
+          "clipse"
+          "--title"
+          "Clipboard"
+          "-e"
+          "clipse"
         ];
 
-        # Close focused window
         "Mod+C" = {
           action.close-window = [ ];
         };
-
-        # Quit Niri
         "Mod+Shift+E" = {
           action.quit = [ ];
         };
 
-        # Screenshot region to clipboard via swappy
         "Print" = spawn [
+          "sh"
+          "-c"
+          "grim -g \"$(slurp)\" - | wl-copy --type image/png"
+        ];
+        "Mod+Print" = spawn [
           "sh"
           "-c"
           "grim -g \"$(slurp)\" - | swappy -f -"
         ];
-
-        # Clipboard manager
-        "Ctrl+Grave" = spawn [
+        "Shift+Print" = spawn [
           "sh"
           "-c"
-          "cliphist list | fuzzel -d | cliphist decode | wl-copy"
+          "grim - | wl-copy --type image/png"
+        ];
+        "Mod+Shift+Print" = spawn [
+          "sh"
+          "-c"
+          "niri msg action screenshot-window --write-to-disk false && wl-paste --type image/png | swappy -f -"
+        ];
+        "Ctrl+Grave" = spawn [
+          "${pkgs.kitty}/bin/kitty"
+          "--class"
+          "clipse"
+          "--title"
+          "Clipboard"
+          "-e"
+          "clipse"
         ];
 
-        # ----- Vim-style window focus (h/j/k/l) -----
         "Mod+H" = {
           action.focus-column-left = [ ];
         };
@@ -61,7 +94,6 @@
           action.focus-window-down = [ ];
         };
 
-        # Arrow-key focus (kept for convenience)
         "Mod+Left" = {
           action.focus-column-left = [ ];
         };
@@ -75,7 +107,6 @@
           action.close-window = [ ];
         };
 
-        # ----- Vim-style window move -----
         "Mod+Shift+H" = {
           action.move-column-left = [ ];
         };
@@ -89,7 +120,6 @@
           action.move-window-down = [ ];
         };
 
-        # Arrow-key move (kept for convenience)
         "Mod+Shift+Left" = {
           action.move-column-left = [ ];
         };
@@ -103,7 +133,6 @@
           action.move-window-down = [ ];
         };
 
-        # Move to monitor
         "Mod+Shift+Control+Left" = {
           action.move-column-to-monitor-left = [ ];
         };
@@ -117,27 +146,22 @@
           action.move-column-to-monitor-down = [ ];
         };
 
-        # Fullscreen toggle
         "Mod+F" = {
           action.fullscreen-window = [ ];
         };
-
-        # Maximize column
         "Mod+Shift+F" = {
           action.maximize-column = [ ];
         };
-
-        # Workspace overview
         "Mod+O" = {
           action.toggle-overview = [ ];
         };
-
-        # Cycle preset column widths
         "Mod+W" = {
           action.switch-preset-column-width = [ ];
         };
+        "Mod+Shift+Space" = {
+          action.toggle-window-floating = [ ];
+        };
 
-        # Resize column width
         "Mod+Minus" = {
           action.set-column-width = "-10%";
         };
@@ -145,7 +169,6 @@
           action.set-column-width = "+10%";
         };
 
-        # Monitor Navigation
         "Mod+Tab" = {
           action.focus-monitor-right = [ ];
         };
@@ -153,63 +176,18 @@
           action.focus-monitor-left = [ ];
         };
 
-        # Splitting / Column Control
         "Mod+Comma" = {
           action.consume-window-into-column = [ ];
         };
         "Mod+Period" = {
           action.expel-window-from-column = [ ];
         };
-
-        # Show bindings
         "Mod+Shift+Slash" = {
           action.show-hotkey-overlay = [ ];
         };
 
-        # Workspace navigation
-        "Mod+1" = {
-          action.focus-workspace = 1;
-        };
-        "Mod+2" = {
-          action.focus-workspace = 2;
-        };
-        "Mod+3" = {
-          action.focus-workspace = 3;
-        };
-        "Mod+4" = {
-          action.focus-workspace = 4;
-        };
-        "Mod+5" = {
-          action.focus-workspace = 5;
-        };
+        "Mod+Escape" = spawn [ "${pkgs.gdm}/bin/gdmflexiserver" ];
 
-        # Move window to workspace
-        "Mod+Shift+1" = {
-          action.move-column-to-workspace = 1;
-        };
-        "Mod+Shift+2" = {
-          action.move-column-to-workspace = 2;
-        };
-        "Mod+Shift+3" = {
-          action.move-column-to-workspace = 3;
-        };
-        "Mod+Shift+4" = {
-          action.move-column-to-workspace = 4;
-        };
-        "Mod+Shift+5" = {
-          action.move-column-to-workspace = 5;
-        };
-
-        # Lock screen
-        "Mod+Escape" = spawn [
-          "swaylock"
-          "--effect-blur"
-          "7x5"
-          "--clock"
-          "--indicator"
-        ];
-
-        # ----- Volume / media keys -----
         "XF86AudioRaiseVolume" = spawn [
           "wpctl"
           "set-volume"
@@ -240,6 +218,17 @@
           "playerctl"
           "previous"
         ];
-      };
+        "XF86MonBrightnessUp" = spawn [
+          "brightnessctl"
+          "set"
+          "5%+"
+        ];
+        "XF86MonBrightnessDown" = spawn [
+          "brightnessctl"
+          "set"
+          "5%-"
+        ];
+      }
+      // workspaceBinds;
   };
 }

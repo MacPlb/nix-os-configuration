@@ -19,15 +19,11 @@
     # Utils
     bat
     ripgrep
-    lazygit
 
     # IDE
     pkgs-unstable.jetbrains.pycharm
     pkgs-unstable.jetbrains.rider
-    pkgs-unstable.zed-editor
     zellij
-    kiro
-    antigravity
     vscode
 
     # Languages
@@ -35,6 +31,7 @@
     go
     rustup
     gcc
+    nodejs
 
     # NIX
     nil

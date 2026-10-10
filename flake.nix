@@ -22,9 +22,18 @@
         url = "github:noctalia-dev/noctalia-shell";
         inputs.nixpkgs.follows = "nixpkgs";
       };
+
+      # Declarative Doom Emacs packaged through Home Manager
+      nix-doom-emacs-unstraightened = {
+        url = "github:marienz/nix-doom-emacs-unstraightened";
+        inputs = {
+          doomdir.url = "path:./modules/home/doom.d";
+          nixpkgs.follows = "nixpkgs";
+        };
+      };
     };
 
-  outputs = { nixpkgs, nixpkgs-unstable, home-manager, niri, noctalia-shell, ... }@inputs: {
+  outputs = { nixpkgs, nixpkgs-unstable, home-manager, niri, noctalia-shell, nix-doom-emacs-unstraightened, ... }@inputs: {
     nixosConfigurations.nietzsche = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
 
@@ -49,6 +58,7 @@
           home-manager.backupFileExtension = "backup";
           home-manager.users.friedrich = import ./modules/home;
           home-manager.extraSpecialArgs = {
+            inherit inputs;
             pkgs-unstable = import nixpkgs-unstable {
               system = "x86_64-linux";
               config.allowUnfree = true;

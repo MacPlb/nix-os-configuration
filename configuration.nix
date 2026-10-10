@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./modules/software/ai.nix
     ./modules/software/development.nix
     ./modules/software/common.nix
     ./modules/software/creative_software.nix
@@ -13,20 +14,33 @@
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.tmp.cleanOnBoot = true;
 
-  # Features
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  # Newer kernels and early amdgpu loading help RDNA3 cards like the RX 7700 XT.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.initrd.kernelModules = [ "amdgpu" ];
+
+  hardware.enableRedistributableFirmware = true;
+
+  nix = {
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      auto-optimise-store = true;
+      warn-dirty = false;
+    };
+
+  };
 
   networking.hostName = "nietzsche";
   networking.networkmanager.enable = true;
+  networking.firewall.enable = true;
 
   time.timeZone = "Europe/Warsaw";
   i18n.defaultLocale = "en_US.UTF-8";
 
-  # Fonts
   fonts = {
     fontDir.enable = true;
     fontconfig.enable = true;
@@ -51,20 +65,79 @@
 
   services.xserver = {
     enable = true;
+    videoDrivers = [ "amdgpu" ];
     xkb = {
       layout = "pl";
       variant = "";
     };
   };
 
-  # Gnome loagin manager
   services.displayManager.gdm.enable = true;
+  services.displayManager.defaultSession = "niri";
+  services.greetd.enable = false;
+
+  system.activationScripts.hideRootFromGdm.text = ''
+    accounts_dir=/var/lib/AccountsService/users
+    root_account=$accounts_dir/root
+
+    install -d -m 0755 "$accounts_dir"
+    cat > "$root_account" <<'EOF'
+[User]
+SystemAccount=true
+EOF
+    chmod 0644 "$root_account"
+  '';
+
+  programs.dconf.profiles.gdm.databases = [
+    {
+      settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+          gtk-theme = "Adwaita-dark";
+          icon-theme = "Papirus-Dark";
+          accent-color = "purple";
+        };
+
+        "org/gnome/login-screen" = {
+          disable-user-list = false;
+        };
+      };
+    }
+  ];
 
   console.keyMap = "pl2";
 
-  services.printing.enable = false;
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      gutenprint
+      hplip
+    ];
+  };
+  services.fstrim.enable = true;
+  services.fwupd.enable = true;
+  services.dbus.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+    extraPackages = with pkgs; [
+      mesa
+      vulkan-loader
+      vulkan-validation-layers
+    ];
+  };
 
   security.rtkit.enable = true;
+  security.polkit.enable = true;
+
+  zramSwap.enable = true;
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -77,12 +150,15 @@
     isNormalUser = true;
     description = "Friedrich";
     extraGroups = [
+      "input"
+      "lp"
       "networkmanager"
+      "scanner"
+      "video"
       "wheel"
     ];
   };
 
-  # Extra drive
   fileSystems."/mnt/sda1" = {
     device = "/dev/disk/by-uuid/D612174D121731CB";
     fsType = "ntfs";
@@ -95,23 +171,31 @@
   fileSystems."/mnt/nvme3" = {
     device = "/dev/disk/by-uuid/B8886DEF886DAD16";
     fsType = "ntfs";
-    options = [ "defaults" "nofail" ];
+    options = [
+      "defaults"
+      "nofail"
+    ];
   };
 
-  # USB drive support
   services.gvfs.enable = true;
+  services.udisks2.enable = true;
 
-  # File manager (enables GSettings schemas needed outside GNOME)
-  programs.nautilus.enable = true;
-
-  #Bluetooth
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+  services.blueman.enable = false;
 
   nixpkgs.config.allowUnfree = true;
 
-
+  programs.dconf.enable = true;
   programs.xwayland.enable = true;
-  
-  system.stateVersion = "24.11";
+
+  environment.sessionVariables = {
+    AMD_VULKAN_ICD = "RADV";
+    MOZ_ENABLE_WAYLAND = "1";
+    NIXOS_OZONE_WL = "1";
+  };
+
+  system.stateVersion = "25.11";
 }

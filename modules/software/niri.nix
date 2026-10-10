@@ -7,11 +7,17 @@
   # Electron / Chromium apps should use Wayland natively
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+    GTK_USE_PORTAL = "1";
   };
 
   # XDG Desktop Portal for file dialogs, screen sharing, etc.
   xdg.portal = {
     enable = true;
+    config = {
+      common.default = [ "gtk" ];
+      niri.default = [ "gtk" ];
+    };
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 

@@ -76,7 +76,7 @@
       };
 
       dock = {
-        enable = true;
+        enable = false;
         position = "bottom";
         monitors = [ "HDMI-A-1" ];
       };
@@ -97,7 +97,10 @@
       };
 
       location = {
-        autoLocate = true;
+        autoLocate = false;
+        address = "Bytow, Poland";
+        latitude = 54.1706;
+        longitude = 17.4919;
       };
 
       wallpaper = {
