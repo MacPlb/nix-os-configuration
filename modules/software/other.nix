@@ -26,6 +26,8 @@
     gnome-disk-utility
     gnome-system-monitor
     simple-scan
+    loupe
+    file-roller
     system-config-printer
     gnome-calculator
 

@@ -101,10 +101,10 @@
           action.focus-column-right = [ ];
         };
         "Mod+Up" = {
-          action.toggle-overview = [ ];
+          action.focus-workspace-up = [ ];
         };
         "Mod+Down" = {
-          action.close-window = [ ];
+          action.focus-workspace-down = [ ];
         };
 
         "Mod+Shift+H" = {
@@ -144,6 +144,9 @@
         };
         "Mod+Shift+Control+Down" = {
           action.move-column-to-monitor-down = [ ];
+        };
+        "Mod+Shift+M" = {
+          action.move-column-to-monitor-next = [ ];
         };
 
         "Mod+F" = {
