@@ -7,6 +7,7 @@
     ./modules/software/development.nix
     ./modules/software/common.nix
     ./modules/software/creative_software.nix
+    ./modules/software/gdm-wallpaper.nix
     ./modules/software/niri.nix
     ./modules/software/other.nix
   ];
@@ -91,6 +92,13 @@ EOF
   programs.dconf.profiles.gdm.databases = [
     {
       settings = {
+        "org/gnome/desktop/background" = {
+          picture-uri = "file://${./static-files/wallpaper.jpg}";
+          picture-uri-dark = "file://${./static-files/wallpaper.jpg}";
+          picture-options = "zoom";
+          primary-color = "#1a1a2e";
+        };
+
         "org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
           gtk-theme = "Adwaita-dark";
@@ -193,9 +201,8 @@ EOF
 
   environment.sessionVariables = {
     AMD_VULKAN_ICD = "RADV";
-    MOZ_ENABLE_WAYLAND = "1";
-    NIXOS_OZONE_WL = "1";
+    # MOZ_ENABLE_WAYLAND and NIXOS_OZONE_WL are set in modules/software/niri.nix
   };
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

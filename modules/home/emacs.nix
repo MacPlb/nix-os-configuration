@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ inputs, pkgs, lib, ... }:
 
 {
   imports = [
@@ -23,7 +23,7 @@
   };
 
   home.packages = with pkgs; [
-    nixfmt-rfc-style
+    nixfmt
 
     # Doom/LSP support
     gopls
@@ -42,6 +42,6 @@
   ];
 
   home.sessionVariables = {
-    VISUAL = "emacsclient -c -a emacs";
+    VISUAL = lib.mkForce "emacsclient -c -a emacs";
   };
 }

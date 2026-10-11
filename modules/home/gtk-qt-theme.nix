@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   dconf.settings = {
@@ -31,6 +31,7 @@
       @define-color accent_color #8c52ff;
       @define-color accent_fg_color #ffffff;
     '';
+    gtk4.theme = config.gtk.theme;
   };
 
   qt = {

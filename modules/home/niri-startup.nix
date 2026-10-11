@@ -1,43 +1,17 @@
-{ ... }:
+{ config, pkgs, ... }:
 
 {
-  programs.niri.settings = {
-    spawn-at-startup = [
-      # Video wallpaper (loops, no audio)
-      {
-        command = [
-          "mpvpaper"
-          "-o"
-          "no-audio loop --panscan=1.0"
-          "*"
-          "/etc/nixos/static-files/wallpaper.mp4"
-        ];
-      }
-
-      # Noctalia desktop shell (bar, notifications, widgets)
-      { command = [ "noctalia-shell" ]; }
-
-      # Clipboard history daemons
-      {
-        command = [
-          "wl-paste"
-          "--type"
-          "text"
-          "--watch"
-          "cliphist"
-          "store"
-        ];
-      }
-      {
-        command = [
-          "wl-paste"
-          "--type"
-          "image"
-          "--watch"
-          "cliphist"
-          "store"
-        ];
-      }
-    ];
+  systemd.user.services.mpvpaper = {
+    Unit = {
+      Description = "Animated desktop wallpaper";
+      PartOf = [ config.wayland.systemd.target ];
+      After = [ config.wayland.systemd.target ];
+    };
+    Service = {
+      ExecStart = "${pkgs.mpvpaper}/bin/mpvpaper -o 'no-audio loop-file=inf panscan=1.0 hwdec=auto' '*' ${../../static-files/wallpaper.mp4}";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ config.wayland.systemd.target ];
   };
 }

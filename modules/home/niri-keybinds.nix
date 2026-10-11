@@ -182,6 +182,12 @@
         "Mod+Period" = {
           action.expel-window-from-column = [ ];
         };
+        "Mod+BracketLeft" = {
+          action.consume-or-expel-window-left = [ ];
+        };
+        "Mod+BracketRight" = {
+          action.consume-or-expel-window-right = [ ];
+        };
         "Mod+Shift+Slash" = {
           action.show-hotkey-overlay = [ ];
         };

@@ -4,17 +4,7 @@
   home.packages = [ pkgs.clipse ];
 
   programs.niri.settings = {
-    spawn-at-startup = lib.mkForce [
-      {
-        command = [
-          "mpvpaper"
-          "-o"
-          "no-audio loop --panscan=1.0"
-          "*"
-          "/etc/nixos/static-files/wallpaper.mp4"
-        ];
-      }
-      { command = [ "noctalia-shell" ]; }
+    spawn-at-startup = [
       {
         command = [
           "${pkgs.wl-clipboard}/bin/wl-paste"

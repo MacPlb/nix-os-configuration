@@ -34,7 +34,7 @@
     nrun = "nix run";
     cls = "clear";
 
-    noctalia-restart = "pkill -u \"$USER\" -f 'noctalia-shell|quickshell.*noctalia|qs.*noctalia' 2>/dev/null; sleep 1; nohup noctalia-shell >/tmp/noctalia-shell.log 2>&1 & disown";
+    noctalia-restart = "systemctl --user restart noctalia.service";
   };
 
   environment.variables = {
