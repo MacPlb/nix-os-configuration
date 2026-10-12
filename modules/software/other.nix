@@ -9,6 +9,7 @@
     vesktop
     pkgs-unstable.signal-desktop
     rhythmbox
+    obsidian
     evince
     libreoffice-fresh
     hunspell

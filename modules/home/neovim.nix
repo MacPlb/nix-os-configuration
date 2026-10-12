@@ -30,6 +30,7 @@ in
     withPython3 = false;
     withRuby = false;
     extraPackages = with pkgs; [
+      wl-clipboard
       omnisharp-roslyn
       dotnet-sdk
       rust-analyzer
@@ -47,6 +48,7 @@ in
     initLua = ''
       vim.g.mapleader = " "
       vim.opt.number = true
+      vim.opt.clipboard = "unnamedplus"
       vim.opt.termguicolors = true
       vim.cmd("filetype plugin indent on")
       vim.cmd("syntax enable")

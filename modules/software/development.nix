@@ -1,6 +1,9 @@
 { pkgs, pkgs-unstable, ... }:
 
 {
+  virtualisation.docker.enable = true;
+  users.users.friedrich.extraGroups = [ "docker" ];
+
   # Git Setup
   programs.git = {
     enable = true;
@@ -23,8 +26,15 @@
     # IDE
     pkgs-unstable.jetbrains.pycharm
     pkgs-unstable.jetbrains.rider
-    zellij
+    tmux
     vscode
+
+    # Containers, infrastructure, APIs and databases
+    docker-compose
+    terraform
+    bruno
+    dbeaver-bin
+    drawio
 
     # Languages
     python3

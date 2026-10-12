@@ -1,0 +1,181 @@
+--- a/src/shell/bar/bar.h
++++ b/src/shell/bar/bar.h
+@@ -115,6 +115,8 @@
+   void beginAttachedPopup(wl_surface* surface);
+   void endAttachedPopup(wl_surface* surface);
+ 
++  [[nodiscard]] std::optional<float> mediaCenterForOutput(wl_output* output) const;
++
+   void registerIpc(IpcService& ipc);
+ 
+ private:
+--- a/src/shell/bar/bar.cpp
++++ b/src/shell/bar/bar.cpp
+@@ -17,6 +17,7 @@
+ #include "shell/bar/bar_reserved_zone.h"
+ #include "shell/bar/widget.h"
+ #include "shell/bar/widget_gesture_defaults.h"
++#include "shell/bar/widgets/media_widget.h"
+ #include "shell/bar/widgets/plugin_widget.h"
+ #include "shell/bar/widgets/taskbar_widget.h"
+ #include "shell/bar/widgets/tray_widget.h"
+@@ -2038,6 +2039,31 @@
+       : std::nullopt;
+ }
+ 
++std::optional<float> Bar::mediaCenterForOutput(wl_output* output) const {
++  // shortcut: anchors to the current full-width top bar, extend if the bar moves or becomes floating.
++  for (const auto& instance : m_instances) {
++    if (instance->output != output || instance->surface == nullptr
++        || instance->barConfig.position != "top" || !barContentVisuallyShown(*instance)) {
++      continue;
++    }
++    for (const auto* widgets : {&instance->startWidgets, &instance->centerWidgets, &instance->endWidgets}) {
++      for (const auto& widget : *widgets) {
++        if (dynamic_cast<const MediaWidget*>(widget.get()) == nullptr) {
++          continue;
++        }
++        const Node* root = widget->outerNode();
++        if (root == nullptr || !root->visible() || root->width() <= 0.0F) {
++          continue;
++        }
++        float x = 0.0F, y = 0.0F;
++        Node::absolutePosition(root, x, y);
++        return instance->surface->marginLeft() + x + root->width() / 2.0F;
++      }
++    }
++  }
++  return std::nullopt;
++}
++
+ std::vector<InputRect> Bar::surfaceRectsForOutput(wl_output* output) const {
+   std::vector<InputRect> rects;
+   if (m_platform == nullptr || output == nullptr) {
+--- a/src/shell/osd/osd_overlay.h
++++ b/src/shell/osd/osd_overlay.h
+@@ -9,6 +9,7 @@
+ #include <string>
+ #include <vector>
+ 
++class Bar;
+ class ConfigService;
+ class CompositorPlatform;
+ class IpcService;
+@@ -48,6 +49,7 @@
+   bool showProgress = true;
+   bool overLimit = false;
+   bool inactive = false;
++  bool trackChange = false;
+ };
+ 
+ class OsdOverlay {
+@@ -61,6 +63,7 @@
+   void initialize(
+       WaylandConnection& wayland, CompositorPlatform& platform, ConfigService* config, RenderContext* renderContext
+   );
++  void bindBar(Bar& bar) { m_bar = &bar; }
+   void registerIpc(IpcService& ipc);
+   void onOutputChange();
+   void onConfigReload();
+@@ -121,6 +124,7 @@
+   void applyReveal(Instance& inst, float reveal);
+   void animateInstance(Instance& inst);
+ 
++  Bar* m_bar = nullptr;
+   WaylandConnection* m_wayland = nullptr;
+   CompositorPlatform* m_platform = nullptr;
+   ConfigService* m_config = nullptr;
+--- a/src/shell/osd/media_osd.cpp
++++ b/src/shell/osd/media_osd.cpp
+@@ -26,6 +26,7 @@
+         .icon = "disc",
+         .value = artist.empty() ? player.title : player.title + " - " + artist,
+         .showProgress = false,
++        .trackChange = true,
+     };
+   }
+ 
+--- a/src/app/application_ui.cpp
++++ b/src/app/application_ui.cpp
+@@ -761,6 +761,7 @@
+ 
+   TooltipManager::instance().initialize(m_wayland, &m_configService, &m_renderContext);
+   m_osdOverlay.initialize(m_wayland, m_compositorPlatform, &m_configService, &m_renderContext);
++  m_osdOverlay.bindBar(m_bar);
+   m_windowSwitcher.initialize(
+       m_wayland, &m_renderContext, m_compositorPlatform, &m_configService, &m_asyncTextureCache
+   );
+--- a/src/shell/osd/osd_overlay.cpp
++++ b/src/shell/osd/osd_overlay.cpp
+@@ -11,6 +11,7 @@
+ #include "render/core/renderer.h"
+ #include "render/render_context.h"
+ #include "render/scene/node.h"
++#include "shell/bar/bar.h"
+ #include "shell/surface/edge_inset.h"
+ #include "ui/builders.h"
+ #include "ui/palette.h"
+@@ -22,6 +23,16 @@
+ #include <cmath>
+ 
+ namespace {
++
++  constexpr int trackOsdLeft(float center, int cardWidth, int outputWidth) {
++    return static_cast<int>(std::clamp(center - cardWidth / 2.0F, 0.0F,
++        static_cast<float>(std::max(0, outputWidth - cardWidth))));
++  }
++  static_assert(trackOsdLeft(500.0F, 300, 1920) == 350);
++  static_assert(trackOsdLeft(10.0F, 300, 1920) == 0);
++  static_assert(trackOsdLeft(1910.0F, 300, 1920) == 1620);
++  static_assert(trackOsdLeft(100.0F, 300, 200) == 0);
++
+ 
+   constexpr Logger kLog("osd");
+ 
+@@ -414,7 +425,8 @@
+       : "top_center";
+   const bool showProgress = m_content.showProgress;
+   const std::string orientation = effectiveOsdOrientation(m_content, configOrientation);
+-  const std::string position = effectiveOsdPosition(orientation, horizontalPosition, verticalPosition);
++  const std::string position = m_content.trackChange
++      ? "top_left" : effectiveOsdPosition(orientation, horizontalPosition, verticalPosition);
+   const float layoutScale = osdUiScale(m_config);
+   m_followFocusedOutput = m_config != nullptr && m_config->config().osd.followFocusedOutput;
+   if (!m_followFocusedOutput) {
+@@ -448,7 +460,19 @@
+       shell::surface_edge_inset::resolve(marginH, Style::spaceMd * layoutScale).innerPadding;
+   const auto surfaceWidth = osdSurfaceWidth(layoutScale, orientation, horizontalInnerPad);
+   const auto surfaceHeight = osdSurfaceHeight(layoutScale, orientation, showProgress);
+-  const SurfaceMargins margins = surfaceMarginsForPosition(position);
++  const auto marginsForOutput = [&](wl_output* output) {
++    auto margins = surfaceMarginsForPosition(position);
++    if (m_content.trackChange && m_bar != nullptr) {
++      const auto center = m_bar->mediaCenterForOutput(output);
++      const auto* info = m_wayland->findOutputByWl(output);
++      if (center.has_value() && info != nullptr) {
++        margins.left = trackOsdLeft(*center, static_cast<int>(surfaceWidth), info->effectiveLogicalWidth());
++      } else if (info != nullptr) {
++        margins.left = std::max(0, (info->effectiveLogicalWidth() - static_cast<int>(surfaceWidth)) / 2);
++      }
++    }
++    return margins;
++  };
+ 
+   m_lastPosition = position;
+   m_lastOrientation = orientation;
+@@ -481,6 +505,7 @@
+     if (inst->surface == nullptr) {
+       continue;
+     }
++    const auto margins = marginsForOutput(inst->output);
+     if (inst->surface->marginTop() != margins.top
+         || inst->surface->marginRight() != margins.right
+         || inst->surface->marginBottom() != margins.bottom
+@@ -532,6 +557,7 @@
+       anchor = LayerShellAnchor::Right;
+     }
+ 
++    const auto margins = marginsForOutput(output.output);
+     auto surfaceConfig = LayerSurfaceConfig{
+         .nameSpace = "noctalia-osd",
+         .layer = LayerShellLayer::Overlay,

@@ -232,5 +232,11 @@ in
     exec-arg = "-e";
   };
 
+  dconf.settings."org/gnome/rhythmbox/plugins".active-plugins = [
+    "generic-player" "mpris" "ipod" "power-manager" "rb" "artsearch"
+    "cd-recorder" "mtpdevice" "dbus-media-server" "iradio" "audiocd"
+    "audioscrobbler" "android"
+  ];
+
   programs.home-manager.enable = true;
 }

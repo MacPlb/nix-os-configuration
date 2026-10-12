@@ -56,12 +56,27 @@ in
 
   programs.noctalia = {
     enable = true;
+    package = inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ [ ./patches/noctalia-track-osd.patch ];
+    });
     systemd.enable = true;
 
     settings = {
       shell = {
         font_family = "JetBrainsMono Nerd Font";
         clipboard_enabled = false; # Clipse owns clipboard history.
+        panel = {
+          control_center_placement = "attached";
+          launcher_placement = "attached";
+          clipboard_placement = "attached";
+          wallpaper_placement = "attached";
+          session_placement = "attached";
+          open_near_click_control_center = true;
+          open_near_click_launcher = true;
+          open_near_click_clipboard = true;
+          open_near_click_wallpaper = true;
+          open_near_click_session = true;
+        };
         launcher.pinned = [
           "firefox"
           "nemo"
@@ -98,6 +113,7 @@ in
           label_source = "id";
         };
         media = {
+          show_tooltip = false;
           hide_when_no_media = true;
           max_length = 800; # noctalia maximum
         };
@@ -107,6 +123,7 @@ in
         };
       };
 
+      control_center.sidebar_section = "none";
       dock.enabled = false;
       notification = {
         position = "top_center";
