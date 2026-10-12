@@ -18,7 +18,7 @@
 
     # Desktop integration
     adwaita-icon-theme
-    papirus-icon-theme
+    (papirus-icon-theme.override { color = "violet"; })
     shared-mime-info
 
     # University / system tools

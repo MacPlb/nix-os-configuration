@@ -145,6 +145,9 @@
         "Mod+Shift+Control+Down" = {
           action.move-column-to-monitor-down = [ ];
         };
+        "Mod+M" = {
+          action.focus-monitor-next = [ ];
+        };
         "Mod+Shift+M" = {
           action.move-column-to-monitor-next = [ ];
         };

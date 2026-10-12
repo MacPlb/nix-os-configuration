@@ -1,7 +1,58 @@
-{ inputs, pkgs, ... }:
+{ config, inputs, pkgs, ... }:
+
+let
+  kitty = config.programs.kitty.settings;
+in
 
 {
   imports = [ inputs.noctalia-shell.homeModules.default ];
+
+  programs.noctalia.customPalettes.Purple.dark = {
+    mPrimary = kitty.cursor;
+    mOnPrimary = kitty.active_tab_foreground;
+    mSecondary = kitty.color12;
+    mOnSecondary = kitty.background;
+    mTertiary = kitty.color5;
+    mOnTertiary = kitty.background;
+    mError = kitty.color1;
+    mOnError = kitty.background;
+    mSurface = kitty.background;
+    mOnSurface = kitty.foreground;
+    mSurfaceVariant = kitty.inactive_tab_background;
+    mOnSurfaceVariant = kitty.foreground;
+    mOutline = kitty.color8;
+    mShadow = "#000000";
+    mHover = kitty.color12;
+    mOnHover = kitty.background;
+    terminal = {
+      background = kitty.background;
+      foreground = kitty.foreground;
+      cursor = kitty.cursor;
+      cursorText = kitty.cursor_text_color;
+      selectionBg = kitty.selection_background;
+      selectionFg = kitty.selection_foreground;
+      normal = {
+        black = kitty.color0;
+        red = kitty.color1;
+        green = kitty.color2;
+        yellow = kitty.color5;
+        blue = kitty.color4;
+        magenta = kitty.color5;
+        cyan = kitty.color6;
+        white = kitty.color7;
+      };
+      bright = {
+        black = kitty.color8;
+        red = kitty.color9;
+        green = kitty.color10;
+        yellow = kitty.color13;
+        blue = kitty.color12;
+        magenta = kitty.color13;
+        cyan = kitty.color14;
+        white = kitty.color15;
+      };
+    };
+  };
 
   programs.noctalia = {
     enable = true;
@@ -57,11 +108,19 @@
       };
 
       dock.enabled = false;
-      notification.position = "top_center";
+      notification = {
+        position = "top_center";
+        monitors = [ "HDMI-A-1" ];
+        follow_focused_output = false;
+      };
+      osd = {
+        monitors = [ "HDMI-A-1" ];
+        follow_focused_output = false;
+      };
       theme = {
         mode = "dark";
-        source = "wallpaper";
-        builtin = "Noctalia";
+        source = "custom";
+        custom_palette = "Purple";
       };
       location = {
         auto_locate = false;
@@ -70,10 +129,10 @@
         longitude = 17.4919;
       };
 
-      # mpvpaper renders the video; the still frame supplies theme colors.
+      # awww renders the wallpaper.
       wallpaper = {
         enabled = false;
-        default.path = "${../../static-files/wallpaper.jpg}";
+        default.path = "${../../static-files/wallpaper.png}";
       };
     };
   };

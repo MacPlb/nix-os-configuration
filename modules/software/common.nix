@@ -12,6 +12,27 @@
 
   environment.systemPackages = with pkgs; [
     nemo
+
+    # Standard GNU command-line utilities.
+    bashInteractive
+    coreutils
+    diffutils
+    findutils
+    gawk
+    gnugrep
+    gnused
+    gnutar
+    gzip
+    patch
+    which
+    time
+    parallel
+    wget
+    gnupg
+    gnumake
+    binutils
+    texinfo
+    less
   ];
 
   xdg.terminal-exec = {

@@ -2,6 +2,9 @@
 
 {
   programs.niri.settings = {
+    debug.wait-for-frame-completion-before-queueing = [ ];
+    # shortcut: avoids scanout format/bandwidth changes, remove after AMD artifacts are resolved upstream.
+    debug.restrict-primary-scanout-to-matching-format = [ ];
     outputs = {
       "HDMI-A-1" = {
         mode = {

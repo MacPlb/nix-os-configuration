@@ -4,6 +4,22 @@ NixOS flake for the host `nietzsche` (x86_64, AMD RX 7700 XT): a Niri Wayland
 desktop with the Noctalia shell, managed together with Home Manager for the
 user `friedrich`.
 
+## Screenshots
+
+Kitty terminal with the dark navy and purple palette.
+
+![Kitty terminal showing the dark navy and purple desktop palette](static-files/desktop-preview.png)
+
+Fuzzel application launcher (`Mod+Space` or `Mod+R`), with the static wallpaper
+and Noctalia bar showing workspaces and system controls.
+
+![Purple Fuzzel application launcher over the static wallpaper, with the Noctalia bar at the top](static-files/launcher-preview.png)
+
+Clipse clipboard history (`Mod+V`) for copied text and images, with controls
+to copy, delete, and pin entries.
+
+![Clipse clipboard history in a purple-bordered terminal over the desktop wallpaper](static-files/clipboard-preview.png)
+
 ## Stack
 
 | Input | Purpose |
@@ -30,11 +46,11 @@ modules/software/            # System-level NixOS modules
   gdm-wallpaper.nix          #   Patches the GDM theme to show the wallpaper
   other.nix                  #   Desktop apps (Firefox, Thunderbird, LibreOffice, ...)
 modules/home/                # Home Manager modules (entry: default.nix)
-  niri-*.nix                 #   Keybinds, appearance, outputs, animated wallpaper
+  niri-*.nix                 #   Keybinds, appearance, outputs, static wallpaper
   noctalia.nix, fuzzel.nix, kitty.nix, starship.nix, clipboard.nix
   gtk-qt-theme.nix           #   Dark Adwaita + Papirus theme
   emacs.nix, doom.d/         #   Doom Emacs and the emacs daemon
-static-files/                # Wallpapers (jpg for GDM, mp4 for mpvpaper)
+static-files/                # Desktop and login wallpapers, screenshots, original video
 ```
 
 ## Usage
@@ -56,6 +72,72 @@ make rollback    # go back to the previous generation
 
 Once installed, the `nixswitch` / `nixtest` / `nixboot` aliases (via `nh`)
 rebuild from `/etc/nixos` directly.
+
+## Monitors
+
+The Dell S2725QS runs at 3840×2160/120 Hz with 1.5× scaling. The MSI MAG271C
+runs at 1920×1080/120 Hz, rotated 90°, with 1× scaling. Both modes were
+confirmed with `niri msg outputs`; the MSI also advertises 144.001 Hz.
+Equal refresh rates do not lock the monitors' physical scanout clocks together.
+VRR is left disabled for a stable desktop baseline.
+
+The desktop wallpaper uses awww to display
+`static-files/wallpaper.png`, bundled into the Nix store at build time.
+Noctalia uses a fixed purple palette. GTK 2/3/4 and Qt 5/6 use purple accents,
+with violet Papirus folder icons. Qt uses Fusion with a custom dark palette.
+Restart applications after switching; log out/in for the Qt platform setting.
+Apps with their own theme engines may need their own theme settings.
+Notifications and volume/brightness OSDs appear only on `HDMI-A-1`; music and
+control panels opened from the bar also use that screen.
+
+## Performance checks
+
+The boot menu waits one second. Hold Space during boot to open the menu for
+an older generation. Store deduplication runs weekly with idle CPU and I/O
+priority instead of doing work on each store import. Disk usage can grow
+between runs; the persistent timer catches up after missed runs.
+
+The measured baseline was 30.073 seconds to boot, including 11.192 seconds
+in firmware, 5.497 in the loader and 8.379 in userspace. These changes have
+not yet been benchmarked after reboot. Keep network readiness enabled:
+Ollama model downloads and firmware refresh depend on it.
+
+Validate the working tree, including untracked wallpaper files, with:
+
+```sh
+nix eval path:.#nixosConfigurations.nietzsche.config.system.build.toplevel.drvPath --raw
+nix flake check path:. --no-write-lock-file --no-build
+```
+
+The first command materializes Doom Emacs's build-time evaluation input.
+Stage new assets before using the normal Git-backed `make build`/`make check`.
+After activation and reboot, compare `systemd-analyze` and
+`systemd-analyze --user blame`, and check both scopes with `systemctl --failed`
+and `systemctl --user --failed`. Noctalia crashes recorded in the baseline
+journal remain a separate issue; these changes do not establish their cause.
+
+Niri uses the stable package from the locked NixOS input (currently 26.04),
+instead of niri-flake's older 25.08 default. The frame-completion workaround
+is retained, and direct scanout is restricted to matching buffer formats to
+avoid bandwidth changes. This can reduce direct-scanout opportunities.
+These are mitigations for intermittent white lines, not a confirmed hardware fix.
+This Niri release does not provide HDR output.
+
+After `make switch`, save your work and log out/in to start the new compositor.
+Check `niri --version` and `niri msg outputs`, then reproduce the Signal/browser
+workload on both monitors. If flashes persist, temporarily stop the
+wallpaper with `systemctl --user stop awww`; restart it with
+`systemctl --user start awww` after comparing. Check logs with:
+
+```sh
+journalctl --user -b -u niri --no-pager -g 'ERROR|WARN'
+journalctl -b -k --no-pager -g 'amdgpu|drm|timeout'
+```
+
+The diagnostic session recorded AMD display-buffer timeouts, MSI HDMI hotplug
+events, and GLES texture upload errors. Unexpected hotplug events require
+checking the cable, port and monitor power settings; configuration alone cannot
+repair a physical link. Keep HDR off in the Dell menu while testing SDR output.
 
 ## Using on another machine
 

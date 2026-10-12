@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  wallpaper = ../../static-files/wallpaper.jpg;
+  wallpaper = ../../static-files/wallpaper.png;
 in
 {
   # The GDM login screen ignores the dconf background settings: gnome-shell

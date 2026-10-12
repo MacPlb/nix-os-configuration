@@ -9,7 +9,22 @@
     enable = true;
     emacs = pkgs.emacs-pgtk;
     extraPackages = epkgs: [
-      epkgs.treesit-grammars.with-all-grammars
+      (epkgs.treesit-grammars.with-grammars (grammars: with grammars; [
+        tree-sitter-bash
+        tree-sitter-c
+        tree-sitter-cpp
+        tree-sitter-c-sharp
+        tree-sitter-go
+        tree-sitter-gomod
+        tree-sitter-json
+        tree-sitter-lua
+        tree-sitter-markdown
+        tree-sitter-markdown-inline
+        tree-sitter-nix
+        tree-sitter-python
+        tree-sitter-rust
+        tree-sitter-yaml
+      ]))
     ];
   };
 

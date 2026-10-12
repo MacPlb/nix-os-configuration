@@ -15,6 +15,7 @@
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.timeout = 1;
   boot.tmp.cleanOnBoot = true;
 
   # Newer kernels and early amdgpu loading help RDNA3 cards like the RX 7700 XT.
@@ -29,10 +30,14 @@
         "nix-command"
         "flakes"
       ];
-      auto-optimise-store = true;
+      auto-optimise-store = false;
       warn-dirty = false;
     };
-
+    # Deduplicate off the rebuild path, with idle CPU and I/O priority.
+    optimise = {
+      automatic = true;
+      dates = [ "weekly" ];
+    };
   };
 
   networking.hostName = "nietzsche";
@@ -93,8 +98,8 @@ EOF
     {
       settings = {
         "org/gnome/desktop/background" = {
-          picture-uri = "file://${./static-files/wallpaper.jpg}";
-          picture-uri-dark = "file://${./static-files/wallpaper.jpg}";
+          picture-uri = "file://${./static-files/wallpaper.png}";
+          picture-uri-dark = "file://${./static-files/wallpaper.png}";
           picture-options = "zoom";
           primary-color = "#1a1a2e";
         };
