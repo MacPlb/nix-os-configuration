@@ -23,17 +23,9 @@
         inputs.nixpkgs.follows = "nixpkgs";
       };
 
-      # Declarative Doom Emacs packaged through Home Manager
-      nix-doom-emacs-unstraightened = {
-        url = "github:marienz/nix-doom-emacs-unstraightened";
-        inputs = {
-          doomdir.url = "path:./modules/home/doom.d";
-          nixpkgs.follows = "nixpkgs";
-        };
-      };
     };
 
-  outputs = { nixpkgs, nixpkgs-unstable, home-manager, niri, noctalia-shell, nix-doom-emacs-unstraightened, ... }@inputs: {
+  outputs = { nixpkgs, nixpkgs-unstable, home-manager, niri, noctalia-shell, ... }@inputs: {
     nixosConfigurations.nietzsche = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
 

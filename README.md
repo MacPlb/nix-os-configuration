@@ -25,7 +25,6 @@ and Noctalia bar showing workspaces and system controls.
 | `home-manager` (release-26.05) | User configuration |
 | `niri` (sodiboo/niri-flake) | Niri compositor, with Home Manager settings |
 | `noctalia-shell` | Status bar, notifications, launcher |
-| `nix-doom-emacs-unstraightened` | Doom Emacs built from `modules/home/doom.d` |
 
 ## Layout
 
@@ -45,7 +44,7 @@ modules/home/                # Home Manager modules (entry: default.nix)
   niri-*.nix                 #   Keybinds, appearance, outputs, static wallpaper
   noctalia.nix, fuzzel.nix, kitty.nix, starship.nix, clipboard.nix
   gtk-qt-theme.nix           #   Dark Adwaita + Papirus theme
-  emacs.nix, doom.d/         #   Doom Emacs and the emacs daemon
+  neovim.nix                #   Lightweight editor using Kitty's palette
 static-files/                # Desktop and login wallpapers, screenshots, original video
 ```
 
@@ -93,6 +92,11 @@ an older generation. Store deduplication runs weekly with idle CPU and I/O
 priority instead of doing work on each store import. Disk usage can grow
 between runs; the persistent timer catches up after missed runs.
 
+Niri and the desktop session have higher CPU weights than ordinary apps;
+NVMe disks use mq-deadline to help desktop reads compete with build writes.
+Build parallelism is unrestricted by this configuration. CPU weights favor
+the desktop during contention and let builds use capacity when it is idle.
+
 The measured baseline was 30.073 seconds to boot, including 11.192 seconds
 in firmware, 5.497 in the loader and 8.379 in userspace. These changes have
 not yet been benchmarked after reboot. Keep network readiness enabled:
@@ -105,7 +109,6 @@ nix eval path:.#nixosConfigurations.nietzsche.config.system.build.toplevel.drvPa
 nix flake check path:. --no-write-lock-file --no-build
 ```
 
-The first command materializes Doom Emacs's build-time evaluation input.
 Stage new assets before using the normal Git-backed `make build`/`make check`.
 After activation and reboot, compare `systemd-analyze` and
 `systemd-analyze --user blame`, and check both scopes with `systemctl --failed`
@@ -134,6 +137,24 @@ The diagnostic session recorded AMD display-buffer timeouts, MSI HDMI hotplug
 events, and GLES texture upload errors. Unexpected hotplug events require
 checking the cable, port and monitor power settings; configuration alone cannot
 repair a physical link. Keep HDR off in the Dell menu while testing SDR output.
+
+## Editor
+
+Neovim is the default editor, including text files opened from Nemo and
+`nixconf` (which uses `sudoedit`). It takes its navy/purple colors directly
+from Kitty. Syntax highlighting uses Neovim's built-in syntax files; Mini Git
+and Mini Statusline show the current Git branch. Plugins are installed by Nix.
+
+Harpoon shortcuts in normal mode: Space then `a` adds the current file,
+Space then `h` opens the editable file list, and Space then `1`–`4` jumps
+to a saved file. In the list, edit entries and press Enter to select a file.
+
+The built-in LSP client starts OmniSharp (C#), rust-analyzer (Rust), gopls
+(Go), Pyright (Python), or clangd (C/C++) when opening a matching file. Server configurations
+come from nvim-lspconfig; Nix installs the servers and .NET SDK. Use `gd` for
+definitions, `K` for hover, `grn` to rename, `gra` for code actions, and
+Ctrl-X then Ctrl-O in insert mode for completion. Rust uses the existing
+rustup toolchain; install its `rust-src` component for standard-library navigation.
 
 ## Using on another machine
 

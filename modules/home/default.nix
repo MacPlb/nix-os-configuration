@@ -40,7 +40,7 @@ let
       "image/vnd.djvu"
       "application/epub+zip"
     ])
-    (assoc [ "emacsclient.desktop" ] [
+    (assoc [ "nvim.desktop" ] [
       "text/plain"
       "text/markdown"
       "text/x-csrc"
@@ -144,7 +144,7 @@ in
     ./fuzzel.nix
     ./gtk-qt-theme.nix
     ./starship.nix
-    ./emacs.nix
+    ./neovim.nix
   ];
 
   services.udiskie = {

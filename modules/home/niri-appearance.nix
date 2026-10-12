@@ -2,6 +2,8 @@
 
 {
   programs.niri.settings = {
+    gestures.hot-corners.enable = false;
+
     # Prefer server-side decorations for a cleaner look
     prefer-no-csd = true;
 

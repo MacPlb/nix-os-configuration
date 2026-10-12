@@ -44,7 +44,7 @@
     nixswitch = "nh os switch /etc/nixos";
     nixtest = "nh os test /etc/nixos";
     nixboot = "nh os boot /etc/nixos";
-    nixconf = "sudo emacs /etc/nixos/configuration.nix";
+    nixconf = "sudoedit /etc/nixos/configuration.nix";
 
     nixgc = "nh clean all";
     nixclean = "nh clean all --keep-since 7d --keep 3";

@@ -6,6 +6,18 @@
   # The niri-flake default is still 25.08; use the stable release in locked nixpkgs.
   programs.niri.package = pkgs.niri;
 
+  # Keep shortcut handling responsive when applications saturate the CPU.
+  systemd.user.slices.session.sliceConfig.CPUWeight = 1000;
+  systemd.user.services.niri = {
+    overrideStrategy = "asDropin";
+    serviceConfig.CPUWeight = 1000;
+  };
+
+  # Give desktop reads deadlines while builds flood NVMe with writes.
+  services.udev.extraRules = ''
+    ACTION=="add|change", SUBSYSTEM=="block", KERNEL=="nvme[0-9]*n[0-9]*", ENV{DEVTYPE}=="disk", ATTR{queue/scheduler}="mq-deadline"
+  '';
+
   # Electron / Chromium apps should use Wayland natively
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
