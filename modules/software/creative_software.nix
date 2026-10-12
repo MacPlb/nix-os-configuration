@@ -6,6 +6,7 @@
   environment.systemPackages = with pkgs; [
     # Photimage
     gimp
+    pinta
 
     #VideoEditing
     shotcut

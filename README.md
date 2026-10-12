@@ -15,10 +15,6 @@ and Noctalia bar showing workspaces and system controls.
 
 ![Purple Fuzzel application launcher over the static wallpaper, with the Noctalia bar at the top](static-files/launcher-preview.png)
 
-Clipse clipboard history (`Mod+V`) for copied text and images, with controls
-to copy, delete, and pin entries.
-
-![Clipse clipboard history in a purple-bordered terminal over the desktop wallpaper](static-files/clipboard-preview.png)
 
 ## Stack
 

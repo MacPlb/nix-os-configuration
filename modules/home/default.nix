@@ -138,6 +138,7 @@ in
     ./niri-outputs.nix
     ./niri-startup.nix
     ./clipboard.nix
+    ./nemo.nix
     ./noctalia.nix
     ./kitty.nix
     ./fuzzel.nix
