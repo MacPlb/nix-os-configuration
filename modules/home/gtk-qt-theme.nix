@@ -1,22 +1,52 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   # QPalette role order, including Qt 6's Accent at index 21.
   colors = [
-    "#e0e0e0" "#2a2a3e" "#5c5c5c" "#44475a" "#141420" "#202030"
-    "#e0e0e0" "#ffffff" "#e0e0e0" "#1a1a2e" "#1a1a2e" "#000000"
-    "#8c52ff" "#ffffff" "#a77bff" "#bd93f9" "#202030" "#000000"
-    "#2a2a3e" "#e0e0e0" "#888888" "#8c52ff"
+    "#e0e0e0"
+    "#2a2a3e"
+    "#5c5c5c"
+    "#44475a"
+    "#141420"
+    "#202030"
+    "#e0e0e0"
+    "#ffffff"
+    "#e0e0e0"
+    "#1a1a2e"
+    "#1a1a2e"
+    "#000000"
+    "#8c52ff"
+    "#ffffff"
+    "#a77bff"
+    "#bd93f9"
+    "#202030"
+    "#000000"
+    "#2a2a3e"
+    "#e0e0e0"
+    "#888888"
+    "#8c52ff"
   ];
   palette = pkgs.writeText "purple-qt.conf" ''
     [ColorScheme]
     active_colors=${lib.concatStringsSep ", " colors}
     inactive_colors=${lib.concatStringsSep ", " colors}
-    disabled_colors=${lib.concatStringsSep ", " (map (color: if color == "#e0e0e0" then "#888888" else color) colors)}
+    disabled_colors=${
+      lib.concatStringsSep ", " (map (color: if color == "#e0e0e0" then "#888888" else color) colors)
+    }
   '';
 in
 {
-  assertions = [{ assertion = builtins.length colors == 22; message = "Qt palette must define all 22 color roles."; }];
+  assertions = [
+    {
+      assertion = builtins.length colors == 22;
+      message = "Qt palette must define all 22 color roles.";
+    }
+  ];
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";

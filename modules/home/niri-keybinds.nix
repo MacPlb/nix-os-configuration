@@ -1,39 +1,60 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.niri.settings = {
     binds =
       let
         spawn = cmd: { action.spawn = cmd; };
-        noctalia = cmd: spawn ([ (lib.getExe config.programs.noctalia.package) "msg" ] ++ cmd);
-        workspaceBinds =
-          builtins.listToAttrs (
-            builtins.concatMap
-              (workspace:
-                let
-                  key = if workspace == 10 then "0" else builtins.toString workspace;
-                in
-                [
-                  {
-                    name = "Mod+${key}";
-                    value.action.focus-workspace = workspace;
-                  }
-                  {
-                    name = "Mod+Shift+${key}";
-                    value.action.move-column-to-workspace = workspace;
-                  }
-                ])
-              (builtins.genList (index: index + 1) 10)
+        noctalia =
+          cmd:
+          spawn (
+            [
+              (lib.getExe config.programs.noctalia.package)
+              "msg"
+            ]
+            ++ cmd
           );
+        workspaceBinds = builtins.listToAttrs (
+          builtins.concatMap (
+            workspace:
+            let
+              key = if workspace == 10 then "0" else builtins.toString workspace;
+            in
+            [
+              {
+                name = "Mod+${key}";
+                value.action.focus-workspace = workspace;
+              }
+              {
+                name = "Mod+Shift+${key}";
+                value.action.move-column-to-workspace = workspace;
+              }
+            ]
+          ) (builtins.genList (index: index + 1) 10)
+        );
       in
       {
         "Mod+Q" = spawn [ "${pkgs.kitty}/bin/kitty" ];
         "Mod+Return" = spawn [ "${pkgs.kitty}/bin/kitty" ];
         "Mod+E" = spawn [ "${pkgs.nemo-with-extensions}/bin/nemo" ];
         "Mod+F1" = spawn [ "${pkgs.nemo-with-extensions}/bin/nemo" ];
-        "Mod+R" = noctalia [ "panel-toggle" "launcher" ];
-        "Mod+Space" = noctalia [ "panel-toggle" "launcher" ];
-        "Ctrl+L" = noctalia [ "session" "lock" ];
+        "Mod+R" = noctalia [
+          "panel-toggle"
+          "launcher"
+        ];
+        "Mod+Space" = noctalia [
+          "panel-toggle"
+          "launcher"
+        ];
+        "Ctrl+L" = noctalia [
+          "session"
+          "lock"
+        ];
         "Mod+B" = spawn [ "${pkgs.firefox}/bin/firefox" ];
 
         "Mod+C" = {
@@ -49,8 +70,16 @@
         "Mod+Shift+Print" = {
           action.screenshot-window = [ ];
         };
-        "Mod+Shift+R" = noctalia [ "plugin" "noctalia/screen_recorder:service" "all" "toggle" ];
-        "Ctrl+Grave" = noctalia [ "panel-toggle" "clipboard" ];
+        "Mod+Shift+R" = noctalia [
+          "plugin"
+          "noctalia/screen_recorder:service"
+          "all"
+          "toggle"
+        ];
+        "Ctrl+Grave" = noctalia [
+          "panel-toggle"
+          "clipboard"
+        ];
 
         "Mod+H" = {
           action.focus-column-left = [ ];
@@ -181,14 +210,26 @@
           action.show-hotkey-overlay = [ ];
         };
 
-        "Mod+Escape" = noctalia [ "session" "lock" ];
+        "Mod+Escape" = noctalia [
+          "session"
+          "lock"
+        ];
 
         "XF86AudioRaiseVolume" = noctalia [ "volume-up" ];
         "XF86AudioLowerVolume" = noctalia [ "volume-down" ];
         "XF86AudioMute" = noctalia [ "volume-mute" ];
-        "XF86AudioPlay" = noctalia [ "media" "toggle" ];
-        "XF86AudioNext" = noctalia [ "media" "next" ];
-        "XF86AudioPrev" = noctalia [ "media" "previous" ];
+        "XF86AudioPlay" = noctalia [
+          "media"
+          "toggle"
+        ];
+        "XF86AudioNext" = noctalia [
+          "media"
+          "next"
+        ];
+        "XF86AudioPrev" = noctalia [
+          "media"
+          "previous"
+        ];
         "XF86MonBrightnessUp" = noctalia [ "brightness-up" ];
         "XF86MonBrightnessDown" = noctalia [ "brightness-down" ];
       }

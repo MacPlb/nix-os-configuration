@@ -1,4 +1,9 @@
-{ config, inputs, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 
 let
   kitty = config.programs.kitty.settings;
@@ -56,9 +61,11 @@ in
 
   programs.noctalia = {
     enable = true;
-    package = inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
-      patches = (old.patches or [ ]) ++ [ ./patches/noctalia-track-osd.patch ];
-    });
+    package =
+      inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+        (old: {
+          patches = (old.patches or [ ]) ++ [ ./patches/noctalia-track-osd.patch ];
+        });
     systemd.enable = true;
 
     settings = {
@@ -103,15 +110,26 @@ in
         margin_edge = 0;
         # Bars spawn on every monitor; hide this one on the vertical screen.
         monitor."HDMI-A-2".enabled = false;
-        start = [ "control-center" "workspaces" "media" ];
+        start = [
+          "control-center"
+          "workspaces"
+          "media"
+        ];
         center = [ "clock" ];
-        end = [ "tray" "volume" "bluetooth" "network" "network_rx" "network_tx" "session" ];
+        end = [
+          "tray"
+          "volume"
+          "bluetooth"
+          "network"
+          "network_rx"
+          "network_tx"
+          "session"
+        ];
       };
 
       widget = {
         # Noctalia 5 shows its owl by default; use the NixOS logo instead.
-        control-center.custom_image =
-          "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+        control-center.custom_image = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
         clock.format = "{:%H:%M:%S}";
         workspaces = {
           hide_when_empty = true;
@@ -124,7 +142,11 @@ in
         };
         tray = {
           drawer = false;
-          hidden = [ "nm-applet" "blueman" "blueman-applet" ];
+          hidden = [
+            "nm-applet"
+            "blueman"
+            "blueman-applet"
+          ];
         };
       };
 

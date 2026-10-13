@@ -3,7 +3,11 @@
 let
   pasteScreenshot = pkgs.writeShellApplication {
     name = "nemo-paste-screenshot";
-    runtimeInputs = [ pkgs.python3 pkgs.wl-clipboard pkgs.zenity ];
+    runtimeInputs = [
+      pkgs.python3
+      pkgs.wl-clipboard
+      pkgs.zenity
+    ];
     text = ''
       exec python3 ${./scripts/nemo-paste-screenshot.py} "$@"
     '';

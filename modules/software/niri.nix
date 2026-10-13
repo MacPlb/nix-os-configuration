@@ -15,7 +15,10 @@
     config = {
       common.default = [ "gtk" ];
       # Screencasting on niri only works via the gnome portal (niri implements mutter's ScreenCast API)
-      niri.default = [ "gnome" "gtk" ];
+      niri.default = [
+        "gnome"
+        "gtk"
+      ];
       niri."org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
     };
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];

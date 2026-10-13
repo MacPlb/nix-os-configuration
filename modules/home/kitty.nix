@@ -36,16 +36,16 @@
       url_color = "#8c52ff";
 
       # Terminal colors (dark palette with purple tones)
-      color0  = "#1a1a2e";
-      color1  = "#ff5555";
-      color2  = "#50fa7b";
-      color3  = "#bd93f9";
-      color4  = "#8c52ff";
-      color5  = "#bd93f9";
-      color6  = "#8be9fd";
-      color7  = "#e0e0e0";
-      color8  = "#44475a";
-      color9  = "#ff6e6e";
+      color0 = "#1a1a2e";
+      color1 = "#ff5555";
+      color2 = "#50fa7b";
+      color3 = "#bd93f9";
+      color4 = "#8c52ff";
+      color5 = "#bd93f9";
+      color6 = "#8be9fd";
+      color7 = "#e0e0e0";
+      color8 = "#44475a";
+      color9 = "#ff6e6e";
       color10 = "#69ff94";
       color11 = "#d6acff";
       color12 = "#a77bff";
