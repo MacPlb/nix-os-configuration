@@ -1,4 +1,4 @@
-{ pkgs,  pkgs-unstable,... }:
+{ pkgs, pkgs-unstable, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -36,7 +36,6 @@
     btop
     htop
     fastfetch
-    brightnessctl
     file
     tree
     eza
@@ -44,7 +43,6 @@
     fzf
     jq
     yq
-    ripgrep
     sd
     tldr
     zoxide
@@ -64,8 +62,5 @@
 
     # Wayland/Xwayland compatibility
     xwayland-satellite
-
-    # Clipboard manager with image preview support
-    clipse
   ];
 }

@@ -1,6 +1,17 @@
 { pkgs, ... }:
 
 {
+  # Nemo's Python extensions (emblems, folder colours) more than double its startup
+  # (~490 ms -> ~210 ms without them); keep only the archive (file-roller) menu.
+  nixpkgs.overlays = [
+    (final: prev: {
+      nemo-with-extensions = prev.nemo-with-extensions.override {
+        useDefaultExtensions = false;
+        extensions = [ final.nemo-fileroller ];
+      };
+    })
+  ];
+
   programs.nh = {
     enable = true;
     flake = "/etc/nixos";
@@ -11,28 +22,15 @@
   };
 
   environment.systemPackages = with pkgs; [
-    nemo
+    nemo-with-extensions
 
-    # Standard GNU command-line utilities.
-    bashInteractive
-    coreutils
-    diffutils
-    findutils
-    gawk
-    gnugrep
-    gnused
-    gnutar
-    gzip
-    patch
-    which
-    time
+    # Extra GNU tools; coreutils, grep, sed, tar, less etc. are in the base system.
     parallel
     wget
     gnupg
     gnumake
     binutils
     texinfo
-    less
   ];
 
   xdg.terminal-exec = {
@@ -58,8 +56,6 @@
     noctalia-restart = "systemctl --user restart noctalia.service";
   };
 
-  environment.variables = {
-    FLAKE = "/etc/nixos";
-    TERMINAL = "kitty";
-  };
+  # programs.nh.flake already exports NH_FLAKE.
+  environment.variables.TERMINAL = "kitty";
 }

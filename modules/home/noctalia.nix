@@ -64,16 +64,21 @@ in
     settings = {
       shell = {
         font_family = "JetBrainsMono Nerd Font";
-        clipboard_enabled = false; # Clipse owns clipboard history.
+        polkit_agent = true;
+        avatar_path = "${../../static-files/wallpaper.png}";
+        screenshot = {
+          # Old grim binds only copied; keep that, the editor's Save still writes to ~/Pictures.
+          save_to_file = false;
+          copy_to_clipboard = true;
+          # Open the drawing editor after every capture; Ctrl+C in the region picker skips it.
+          annotate = true;
+          skip_annotate_on_copy_save = true;
+        };
         panel = {
           control_center_placement = "attached";
-          launcher_placement = "attached";
-          clipboard_placement = "attached";
           wallpaper_placement = "attached";
           session_placement = "attached";
           open_near_click_control_center = true;
-          open_near_click_launcher = true;
-          open_near_click_clipboard = true;
           open_near_click_wallpaper = true;
           open_near_click_session = true;
         };
@@ -146,11 +151,11 @@ in
         longitude = 17.4919;
       };
 
-      # awww renders the wallpaper.
       wallpaper = {
-        enabled = false;
         default.path = "${../../static-files/wallpaper.png}";
       };
+
+      plugins.enabled = [ "noctalia/screen_recorder" ];
     };
   };
 }

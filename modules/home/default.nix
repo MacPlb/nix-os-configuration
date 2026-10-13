@@ -136,12 +136,9 @@ in
     ./niri-keybinds.nix
     ./niri-appearance.nix
     ./niri-outputs.nix
-    ./niri-startup.nix
-    ./clipboard.nix
     ./nemo.nix
     ./noctalia.nix
     ./kitty.nix
-    ./fuzzel.nix
     ./gtk-qt-theme.nix
     ./starship.nix
     ./neovim.nix
@@ -177,34 +174,7 @@ in
     ];
   };
 
-  programs.fuzzel.settings = {
-    main = {
-      icons-enabled = true;
-      icon-theme = "Papirus-Dark";
-      image-size-ratio = lib.mkForce 0.7;
-    };
-    colors = {
-      background = lib.mkForce "1a1a2edd";
-      text = lib.mkForce "e0e0e0ff";
-      prompt = lib.mkForce "8c52ffff";
-      placeholder = lib.mkForce "888888ff";
-      input = lib.mkForce "e0e0e0ff";
-      match = lib.mkForce "8c52ffff";
-      selection = lib.mkForce "3b2964ff";
-      selection-text = lib.mkForce "ffffffff";
-      selection-match = lib.mkForce "bd93f9ff";
-      counter = lib.mkForce "888888ff";
-      border = lib.mkForce "8c52ffff";
-    };
-  };
-
   xdg.dataFile = {
-    "applications/blueman-manager.desktop".text =
-      hiddenDesktopEntry "Bluetooth Manager" "blueman-manager";
-    "applications/blueman-adapters.desktop".text =
-      hiddenDesktopEntry "Bluetooth Adapters" "blueman-adapters";
-    "applications/pavucontrol.desktop".text =
-      hiddenDesktopEntry "Volume Control" "pavucontrol";
     "applications/htop.desktop".text =
       hiddenDesktopEntry "Htop" "htop";
     "applications/btop.desktop".text =

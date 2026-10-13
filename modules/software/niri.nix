@@ -6,24 +6,8 @@
   # The niri-flake default is still 25.08; use the stable release in locked nixpkgs.
   programs.niri.package = pkgs.niri;
 
-  # Keep shortcut handling responsive when applications saturate the CPU.
-  systemd.user.slices.session.sliceConfig.CPUWeight = 1000;
-  systemd.user.services.niri = {
-    overrideStrategy = "asDropin";
-    serviceConfig.CPUWeight = 1000;
-  };
-
-  # Give desktop reads deadlines while builds flood NVMe with writes.
-  services.udev.extraRules = ''
-    ACTION=="add|change", SUBSYSTEM=="block", KERNEL=="nvme[0-9]*n[0-9]*", ENV{DEVTYPE}=="disk", ATTR{queue/scheduler}="mq-deadline"
-  '';
-
   # Electron / Chromium apps should use Wayland natively
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-    GTK_USE_PORTAL = "1";
-  };
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   # XDG Desktop Portal for file dialogs, screen sharing, etc.
   xdg.portal = {
@@ -37,33 +21,18 @@
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
+  # Noctalia is the polkit agent; drop niri-flake's polkit-kde agent.
+  systemd.user.services.niri-flake-polkit.enable = false;
+
+  # Backend for the noctalia/screen_recorder plugin.
+  programs.gpu-screen-recorder.enable = true;
+
   # Packages needed for a complete Niri desktop experience
   environment.systemPackages = with pkgs; [
     # Terminal
     kitty
 
-    # Clipboard utilities
+    # Clipboard CLI (nemo screenshot paste, neovim); history lives in Noctalia
     wl-clipboard
-    cliphist
-
-    # Screenshot pipeline
-    grim
-    slurp
-    swappy
-
-    # Audio control
-    pavucontrol
-    playerctl
-
-    # Wayland wallpaper
-    awww
-
-    # Lock screen
-    swaylock-effects
-
-    # Dmenu replacement for wayland (clipboard manager UI)
-    fuzzel
-
-
   ];
 }

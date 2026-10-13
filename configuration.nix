@@ -44,6 +44,16 @@
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
 
+  services.openssh = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      PermitRootLogin = "no";
+      AllowTcpForwarding = "yes";
+      GatewayPorts = "no";
+    };
+  };
+
   time.timeZone = "Europe/Warsaw";
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -97,22 +107,11 @@ EOF
   programs.dconf.profiles.gdm.databases = [
     {
       settings = {
-        "org/gnome/desktop/background" = {
-          picture-uri = "file://${./static-files/wallpaper.png}";
-          picture-uri-dark = "file://${./static-files/wallpaper.png}";
-          picture-options = "zoom";
-          primary-color = "#1a1a2e";
-        };
-
         "org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
           gtk-theme = "Adwaita-dark";
           icon-theme = "Papirus-Dark";
           accent-color = "purple";
-        };
-
-        "org/gnome/login-screen" = {
-          disable-user-list = false;
         };
       };
     }
@@ -127,23 +126,24 @@ EOF
       hplip
     ];
   };
+  # simple-scan needs SANE; this also creates the "scanner" group used below.
+  hardware.sane = {
+    enable = true;
+    extraBackends = [ pkgs.sane-airscan pkgs.hplip ];
+  };
+
   services.fstrim.enable = true;
   services.fwupd.enable = true;
-  services.dbus.enable = true;
   services.avahi = {
     enable = true;
     nssmdns4 = true;
     openFirewall = true;
   };
 
+  # Mesa (RADV Vulkan, radeonsi VA-API) is the default driver set.
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
-    extraPackages = with pkgs; [
-      mesa
-      vulkan-loader
-      vulkan-validation-layers
-    ];
   };
 
   security.rtkit.enable = true;
@@ -204,10 +204,6 @@ EOF
   programs.dconf.enable = true;
   programs.xwayland.enable = true;
 
-  environment.sessionVariables = {
-    AMD_VULKAN_ICD = "RADV";
-    # MOZ_ENABLE_WAYLAND and NIXOS_OZONE_WL are set in modules/software/niri.nix
-  };
-
-  system.stateVersion = "26.05";
+  # Release this machine was installed with; never bump it on upgrades.
+  system.stateVersion = "25.11";
 }

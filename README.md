@@ -10,10 +10,11 @@ Kitty terminal with the dark navy and purple palette.
 
 ![Kitty terminal showing the dark navy and purple desktop palette](static-files/desktop-preview.png)
 
-Fuzzel application launcher (`Mod+Space` or `Mod+R`), with the static wallpaper
-and Noctalia bar showing workspaces and system controls.
+Application launcher (`Mod+Space` or `Mod+R`), with the static wallpaper
+and Noctalia bar showing workspaces and system controls. The launcher screenshot
+predates the switch from Fuzzel to Noctalia's launcher.
 
-![Purple Fuzzel application launcher over the static wallpaper, with the Noctalia bar at the top](static-files/launcher-preview.png)
+![Purple application launcher over the static wallpaper, with the Noctalia bar at the top](static-files/launcher-preview.png)
 
 
 ## Stack
@@ -24,7 +25,7 @@ and Noctalia bar showing workspaces and system controls.
 | `nixpkgs-unstable` | Newer apps, passed to modules as `pkgs-unstable` |
 | `home-manager` (release-26.05) | User configuration |
 | `niri` (sodiboo/niri-flake) | Niri compositor, with Home Manager settings |
-| `noctalia-shell` | Status bar, notifications, launcher |
+| `noctalia-shell` | Bar, launcher, notifications, clipboard, screenshots, wallpaper, lock screen, polkit |
 
 ## Layout
 
@@ -36,13 +37,13 @@ modules/software/            # System-level NixOS modules
   ai.nix                     #   Ollama (Vulkan), Codex, Claude Code
   common.nix                 #   nh, terminal-exec, shell aliases
   development.nix            #   git, CLI tools, JetBrains IDEs
-  creative_software.nix      #   GIMP, Shotcut, OBS, mpv
+  creative_software.nix      #   GIMP, Shotcut, OBS, mpv, non-free codecs
   niri.nix                   #   Niri, Wayland env vars, XDG portals
   gdm-wallpaper.nix          #   Patches the GDM theme to show the wallpaper
   other.nix                  #   Desktop apps (Firefox, Thunderbird, LibreOffice, ...)
 modules/home/                # Home Manager modules (entry: default.nix)
-  niri-*.nix                 #   Keybinds, appearance, outputs, static wallpaper
-  noctalia.nix, fuzzel.nix, kitty.nix, starship.nix, clipboard.nix
+  niri-*.nix                 #   Keybinds, appearance, outputs
+  noctalia.nix, kitty.nix, starship.nix
   gtk-qt-theme.nix           #   Dark Adwaita + Papirus theme
   neovim.nix                #   Lightweight editor using Kitty's palette
 static-files/                # Desktop and login wallpapers, screenshots, original video
@@ -68,6 +69,21 @@ make rollback    # go back to the previous generation
 Once installed, the `nixswitch` / `nixtest` / `nixboot` aliases (via `nh`)
 rebuild from `/etc/nixos` directly.
 
+## SSH and localhost forwarding
+
+After `make switch`, connect with `ssh friedrich@nietzsche` (or use the
+machine's IP address). The firewall allows SSH on port 22; root login is disabled.
+
+To access a service listening on this machine's localhost port 3000 from
+another computer, run this on that computer:
+
+```sh
+ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:3000:127.0.0.1:3000 friedrich@nietzsche
+```
+
+Then open `http://127.0.0.1:3000` there. Replace the ports as needed.
+TCP forwarding is enabled, and remote forwards bind to loopback only.
+
 ## Monitors
 
 The Dell S2725QS runs at 3840×2160/120 Hz with 1.5× scaling. The MSI MAG271C
@@ -76,8 +92,13 @@ confirmed with `niri msg outputs`; the MSI also advertises 144.001 Hz.
 Equal refresh rates do not lock the monitors' physical scanout clocks together.
 VRR is left disabled for a stable desktop baseline.
 
-The desktop wallpaper uses awww to display
-`static-files/wallpaper.png`, bundled into the Nix store at build time.
+Noctalia draws the desktop wallpaper from `static-files/wallpaper.png`,
+bundled into the Nix store at build time. It also provides the clipboard history
+(`Ctrl+Grave`), screenshots (`Print` region, `Shift+Print` screen, `Mod+Print`
+annotate; `Mod+Shift+Print` is niri's window shot), the lock screen
+(`Ctrl+L`/`Mod+Escape`) and the polkit agent. The `noctalia/screen_recorder`
+plugin (`Mod+Shift+R`) records with gpu-screen-recorder; Noctalia fetches it from
+its official plugin repository on first start.
 Noctalia uses a fixed purple palette. GTK 2/3/4 and Qt 5/6 use purple accents,
 with violet Papirus folder icons. Qt uses Fusion with a custom dark palette.
 Restart applications after switching; log out/in for the Qt platform setting.
@@ -92,10 +113,10 @@ an older generation. Store deduplication runs weekly with idle CPU and I/O
 priority instead of doing work on each store import. Disk usage can grow
 between runs; the persistent timer catches up after missed runs.
 
-Niri and the desktop session have higher CPU weights than ordinary apps;
-NVMe disks use mq-deadline to help desktop reads compete with build writes.
-Build parallelism is unrestricted by this configuration. CPU weights favor
-the desktop during contention and let builds use capacity when it is idle.
+Niri uses the packaged user service without CPU priority overrides, and
+NVMe disks use their default scheduler. A NixOS-generated Niri service
+drop-in overwrote the session PATH with basic utilities, breaking app
+launches. Build parallelism is unrestricted by this configuration.
 
 The measured baseline was 30.073 seconds to boot, including 11.192 seconds
 in firmware, 5.497 in the loader and 8.379 in userspace. These changes have
@@ -125,8 +146,8 @@ This Niri release does not provide HDR output.
 After `make switch`, save your work and log out/in to start the new compositor.
 Check `niri --version` and `niri msg outputs`, then reproduce the Signal/browser
 workload on both monitors. If flashes persist, temporarily stop the
-wallpaper with `systemctl --user stop awww`; restart it with
-`systemctl --user start awww` after comparing. Check logs with:
+wallpaper by setting `wallpaper.enabled = false` in `modules/home/noctalia.nix`
+and switching; remove it again after comparing. Check logs with:
 
 ```sh
 journalctl --user -b -u niri --no-pager -g 'ERROR|WARN'

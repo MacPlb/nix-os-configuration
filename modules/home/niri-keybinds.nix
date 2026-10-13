@@ -1,10 +1,11 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   programs.niri.settings = {
     binds =
       let
         spawn = cmd: { action.spawn = cmd; };
+        noctalia = cmd: spawn ([ (lib.getExe config.programs.noctalia.package) "msg" ] ++ cmd);
         workspaceBinds =
           builtins.listToAttrs (
             builtins.concatMap
@@ -26,23 +27,14 @@
           );
       in
       {
-        "Mod+Q" = spawn [ "kitty" ];
-        "Mod+Return" = spawn [ "kitty" ];
-        "Mod+E" = spawn [ "nemo" ];
-        "Mod+F1" = spawn [ "nemo" ];
-        "Mod+R" = spawn [ "fuzzel" ];
-        "Mod+Space" = spawn [ "fuzzel" ];
-        "Ctrl+L" = spawn [ "${pkgs.gdm}/bin/gdmflexiserver" ];
-        "Mod+B" = spawn [ "firefox" ];
-        "Mod+V" = spawn [
-          "${pkgs.kitty}/bin/kitty"
-          "--class"
-          "clipse"
-          "--title"
-          "Clipboard"
-          "-e"
-          "clipse"
-        ];
+        "Mod+Q" = spawn [ "${pkgs.kitty}/bin/kitty" ];
+        "Mod+Return" = spawn [ "${pkgs.kitty}/bin/kitty" ];
+        "Mod+E" = spawn [ "${pkgs.nemo-with-extensions}/bin/nemo" ];
+        "Mod+F1" = spawn [ "${pkgs.nemo-with-extensions}/bin/nemo" ];
+        "Mod+R" = noctalia [ "panel-toggle" "launcher" ];
+        "Mod+Space" = noctalia [ "panel-toggle" "launcher" ];
+        "Ctrl+L" = noctalia [ "session" "lock" ];
+        "Mod+B" = spawn [ "${pkgs.firefox}/bin/firefox" ];
 
         "Mod+C" = {
           action.close-window = [ ];
@@ -51,35 +43,14 @@
           action.quit = [ ];
         };
 
-        "Print" = spawn [
-          "sh"
-          "-c"
-          "grim -g \"$(slurp)\" - | wl-copy --type image/png"
-        ];
-        "Mod+Print" = spawn [
-          "sh"
-          "-c"
-          "grim -g \"$(slurp)\" - | swappy -f -"
-        ];
-        "Shift+Print" = spawn [
-          "sh"
-          "-c"
-          "grim - | wl-copy --type image/png"
-        ];
-        "Mod+Shift+Print" = spawn [
-          "sh"
-          "-c"
-          "niri msg action screenshot-window --write-to-disk false && wl-paste --type image/png | swappy -f -"
-        ];
-        "Ctrl+Grave" = spawn [
-          "${pkgs.kitty}/bin/kitty"
-          "--class"
-          "clipse"
-          "--title"
-          "Clipboard"
-          "-e"
-          "clipse"
-        ];
+        "Print" = noctalia [ "screenshot-region" ];
+        "Mod+Print" = noctalia [ "screenshot-annotate" ];
+        "Shift+Print" = noctalia [ "screenshot-fullscreen" ];
+        "Mod+Shift+Print" = {
+          action.screenshot-window = [ ];
+        };
+        "Mod+Shift+R" = noctalia [ "plugin" "noctalia/screen_recorder:service" "all" "toggle" ];
+        "Ctrl+Grave" = noctalia [ "panel-toggle" "clipboard" ];
 
         "Mod+H" = {
           action.focus-column-left = [ ];
@@ -105,6 +76,18 @@
         };
         "Mod+Down" = {
           action.focus-workspace-down = [ ];
+        };
+        "Mod+Ctrl+Up" = {
+          action.move-column-to-workspace-up = [ ];
+        };
+        "Mod+Ctrl+Down" = {
+          action.move-column-to-workspace-down = [ ];
+        };
+        "Mod+Ctrl+K" = {
+          action.move-column-to-workspace-up = [ ];
+        };
+        "Mod+Ctrl+J" = {
+          action.move-column-to-workspace-down = [ ];
         };
 
         "Mod+Shift+H" = {
@@ -198,48 +181,16 @@
           action.show-hotkey-overlay = [ ];
         };
 
-        "Mod+Escape" = spawn [ "${pkgs.gdm}/bin/gdmflexiserver" ];
+        "Mod+Escape" = noctalia [ "session" "lock" ];
 
-        "XF86AudioRaiseVolume" = spawn [
-          "wpctl"
-          "set-volume"
-          "@DEFAULT_AUDIO_SINK@"
-          "5%+"
-        ];
-        "XF86AudioLowerVolume" = spawn [
-          "wpctl"
-          "set-volume"
-          "@DEFAULT_AUDIO_SINK@"
-          "5%-"
-        ];
-        "XF86AudioMute" = spawn [
-          "wpctl"
-          "set-mute"
-          "@DEFAULT_AUDIO_SINK@"
-          "toggle"
-        ];
-        "XF86AudioPlay" = spawn [
-          "playerctl"
-          "play-pause"
-        ];
-        "XF86AudioNext" = spawn [
-          "playerctl"
-          "next"
-        ];
-        "XF86AudioPrev" = spawn [
-          "playerctl"
-          "previous"
-        ];
-        "XF86MonBrightnessUp" = spawn [
-          "brightnessctl"
-          "set"
-          "5%+"
-        ];
-        "XF86MonBrightnessDown" = spawn [
-          "brightnessctl"
-          "set"
-          "5%-"
-        ];
+        "XF86AudioRaiseVolume" = noctalia [ "volume-up" ];
+        "XF86AudioLowerVolume" = noctalia [ "volume-down" ];
+        "XF86AudioMute" = noctalia [ "volume-mute" ];
+        "XF86AudioPlay" = noctalia [ "media" "toggle" ];
+        "XF86AudioNext" = noctalia [ "media" "next" ];
+        "XF86AudioPrev" = noctalia [ "media" "previous" ];
+        "XF86MonBrightnessUp" = noctalia [ "brightness-up" ];
+        "XF86MonBrightnessDown" = noctalia [ "brightness-down" ];
       }
       // workspaceBinds;
   };

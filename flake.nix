@@ -25,17 +25,18 @@
 
     };
 
-  outputs = { nixpkgs, nixpkgs-unstable, home-manager, niri, noctalia-shell, ... }@inputs: {
+  outputs = { nixpkgs, nixpkgs-unstable, home-manager, niri, ... }@inputs:
+  let
+    system = "x86_64-linux";
+    pkgs-unstable = import nixpkgs-unstable {
+      inherit system;
+      config.allowUnfree = true;
+    };
+  in {
     nixosConfigurations.nietzsche = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      inherit system;
 
-      specialArgs = {
-        inherit inputs;
-        pkgs-unstable = import nixpkgs-unstable {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-        };
-      };
+      specialArgs = { inherit inputs pkgs-unstable; };
 
       modules = [
         ./configuration.nix
@@ -49,13 +50,7 @@
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
           home-manager.users.friedrich = import ./modules/home;
-          home-manager.extraSpecialArgs = {
-            inherit inputs;
-            pkgs-unstable = import nixpkgs-unstable {
-              system = "x86_64-linux";
-              config.allowUnfree = true;
-            };
-          };
+          home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable; };
         }
       ];
     };
