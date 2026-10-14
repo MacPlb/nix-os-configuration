@@ -23,6 +23,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Noctalia login greeter for greetd (replaces GDM)
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
@@ -53,6 +59,8 @@
 
           # Niri compositor NixOS module
           niri.nixosModules.niri
+
+          inputs.noctalia-greeter.nixosModules.default
 
           home-manager.nixosModules.home-manager
           {

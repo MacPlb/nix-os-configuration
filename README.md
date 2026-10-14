@@ -25,7 +25,8 @@ predates the switch from Fuzzel to Noctalia's launcher.
 | `nixpkgs-unstable` | Newer apps, passed to modules as `pkgs-unstable` |
 | `home-manager` (release-26.05) | User configuration |
 | `niri` (sodiboo/niri-flake) | Niri compositor, with Home Manager settings |
-| `noctalia-shell` | Bar, launcher, notifications, clipboard, screenshots, wallpaper, lock screen, polkit |
+| `noctalia-shell` | Bar, launcher, notifications, clipboard, screenshots, wallpaper, lock screen, idle, polkit |
+| `noctalia-greeter` | greetd login screen styled like Noctalia (replaces GDM) |
 
 ## Layout
 
@@ -36,7 +37,7 @@ hosts/nietzsche/             # This machine: boot, kernel, CPU/wifi tuning, user
 modules/system/              # Shared system settings
   nix.nix                    #   Nix daemon, flakes, unfree, store optimisation
   locale.nix                 #   Time zone, locales, keyboard layout, fonts
-  desktop.nix                #   GDM, PipeWire, dconf, polkit, gvfs/udisks
+  desktop.nix                #   Noctalia Greeter (greetd), PipeWire, dconf, polkit, gvfs/udisks
   services.nix               #   NetworkManager, SSH, Avahi, printing/scanning, fstrim, fwupd
 modules/software/            # Application NixOS modules
   ai.nix                     #   Ollama (Vulkan), Codex, Claude Code
@@ -44,7 +45,6 @@ modules/software/            # Application NixOS modules
   development.nix            #   git, CLI tools, JetBrains IDEs
   creative_software.nix      #   GIMP, Shotcut, OBS, mpv, non-free codecs
   niri.nix                   #   Niri, Wayland env vars, XDG portals
-  gdm-wallpaper.nix          #   Patches the GDM theme to show the wallpaper
   other.nix                  #   Desktop apps (Firefox, Thunderbird, LibreOffice, ...)
 modules/home/                # Home Manager modules (entry: default.nix)
   niri-*.nix                 #   Keybinds, appearance, outputs
@@ -106,6 +106,12 @@ annotate; `Mod+Shift+Print` is niri's window shot), the lock screen
 (`Ctrl+L`/`Mod+Escape`) and the polkit agent. The `noctalia/screen_recorder`
 plugin (`Mod+Shift+R`) records with gpu-screen-recorder; Noctalia fetches it from
 its official plugin repository on first start.
+`Mod+S` opens the control center, `Mod+N` the settings window and `Alt+Tab`
+the window switcher; typing in the overview (`Mod+O`) opens the launcher.
+The screen locks after 10 minutes idle and turns off a minute later. Weather,
+night light and calendar (add accounts in Settings → Calendar) use `[location]`.
+The Noctalia Greeter replaces GDM. The shell auto-syncs wallpaper, palette,
+font and monitor layout to it without a password prompt.
 Noctalia uses a fixed purple palette. GTK 2/3/4 and Qt 5/6 use purple accents,
 with violet Papirus folder icons. Qt uses Fusion with a custom dark palette.
 Restart applications after switching; log out/in for the Qt platform setting.

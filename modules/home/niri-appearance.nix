@@ -37,6 +37,17 @@
       focus-ring.enable = false;
     };
 
+    # Lets Noctalia notification actions focus the window that sent them.
+    debug.honor-xdg-activation-with-invalid-serial = [ ];
+
+    # Noctalia's blurred wallpaper copy fills the overview background.
+    layer-rules = [
+      {
+        matches = [ { namespace = "^noctalia-backdrop"; } ];
+        place-within-backdrop = true;
+      }
+    ];
+
     # ----- Window rules: rounded corners -----
     window-rules = [
       {
@@ -51,6 +62,12 @@
             top-right = r;
           };
         clip-to-geometry = true;
+      }
+      {
+        matches = [ { app-id = "^dev\\.noctalia\\.Noctalia$"; } ];
+        open-floating = true;
+        default-column-width.fixed = 1080;
+        default-window-height.fixed = 920;
       }
     ];
   };

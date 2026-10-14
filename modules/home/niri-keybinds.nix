@@ -51,6 +51,15 @@
           "panel-toggle"
           "launcher"
         ];
+        "Mod+S" = noctalia [
+          "panel-toggle"
+          "control-center"
+        ];
+        "Mod+N" = noctalia [ "settings-toggle" ];
+        "Alt+Tab" = noctalia [
+          "window-switcher"
+          "hold"
+        ];
         "Ctrl+L" = noctalia [
           "session"
           "lock"

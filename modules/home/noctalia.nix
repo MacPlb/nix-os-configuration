@@ -72,6 +72,10 @@ in
       shell = {
         font_family = "JetBrainsMono Nerd Font";
         polkit_agent = true;
+        # Start typing in niri's overview (Mod+O) to open the launcher.
+        niri_overview_type_to_launch_enabled = true;
+        # Push wallpaper, palette and font to the login greeter whenever they change.
+        greeter_sync.auto_sync = true;
         avatar_path = "${../../static-files/wallpaper.png}";
         screenshot = {
           # Old grim binds only copied; keep that, the editor's Save still writes to ~/Pictures.
@@ -115,9 +119,15 @@ in
           "workspaces"
           "media"
         ];
-        center = [ "clock" ];
+        center = [
+          "clock"
+          "weather"
+        ];
         end = [
           "tray"
+          "notifications"
+          "caffeine"
+          "nightlight"
           "volume"
           "bluetooth"
           "network"
@@ -151,6 +161,28 @@ in
       };
 
       control_center.sidebar_section = "none";
+      # Blurred wallpaper behind niri's overview (layer rule in niri-appearance.nix).
+      backdrop.enabled = true;
+      weather.enabled = true;
+      # Warmer screen 18:00-06:00 (location.custom_schedule); the bar widget toggles it off.
+      nightlight.enabled = true;
+      # Accounts are added in Settings -> Calendar; events show in the control center.
+      calendar.enabled = true;
+      audio = {
+        enable_sounds = true;
+        enable_volume_sounds = false;
+      };
+      lockscreen.blurred_desktop = true;
+      idle.behavior = {
+        lock = {
+          timeout = 600;
+          action = "lock";
+        };
+        screen-off = {
+          timeout = 660;
+          action = "screen_off";
+        };
+      };
       dock.enabled = false;
       notification = {
         position = "top_center";
@@ -171,6 +203,10 @@ in
         address = "Bytow, Poland";
         latitude = 54.1706;
         longitude = 17.4919;
+        # Fixed night-light hours instead of sunset/sunrise from the coordinates.
+        custom_schedule = true;
+        sunset = "18:00";
+        sunrise = "06:00";
       };
 
       wallpaper = {

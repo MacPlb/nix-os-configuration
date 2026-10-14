@@ -12,7 +12,6 @@
     ../../modules/software/development.nix
     ../../modules/software/common.nix
     ../../modules/software/creative_software.nix
-    ../../modules/software/gdm-wallpaper.nix
     ../../modules/software/niri.nix
     ../../modules/software/other.nix
   ];
