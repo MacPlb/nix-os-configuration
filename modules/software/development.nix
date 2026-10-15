@@ -25,6 +25,7 @@
 
     # IDE
     pkgs-unstable.jetbrains.pycharm
+    pkgs-unstable.jetbrains.rust-rover
     pkgs-unstable.jetbrains.rider
     tmux
     vscode
@@ -39,7 +40,10 @@
     # Languages
     python3
     go
-    rustup
+    # Nix toolchain instead of rustup: RustRover reads it from /run/current-system/sw/bin
+    (pkgs-unstable.rust-bin.stable.latest.default.override {
+      extensions = [ "rust-src" ];
+    })
     gcc
     nodejs
 

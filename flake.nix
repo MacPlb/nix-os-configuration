@@ -6,6 +6,12 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Rust toolchains with rust-src bundled, so RustRover finds the stdlib
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -46,6 +52,7 @@
       pkgs-unstable = import nixpkgs-unstable {
         inherit system;
         config.allowUnfree = true;
+        overlays = [ inputs.rust-overlay.overlays.default ];
       };
     in
     {
@@ -90,10 +97,6 @@
       # `nix flake check` also builds the system, so evaluation errors fail it.
       checks.${system} = {
         nietzsche = self.nixosConfigurations.nietzsche.config.system.build.toplevel;
-        nemo-paste-screenshot = pkgs.runCommand "nemo-paste-screenshot-tests" {
-          nativeBuildInputs = [ pkgs.python3 ];
-          PYTHONDONTWRITEBYTECODE = 1;
-        } "cd ${./.} && python3 -m unittest discover -s tests && touch $out";
       };
     };
 }

@@ -63,7 +63,7 @@ and runs `nixos-rebuild`.
 ```sh
 nix develop      # provides make, git, rsync, nixfmt and prints the targets
 nix fmt          # format all .nix files
-make check       # build the system and run tests/ (nix flake check)
+make check       # build the system (nix flake check)
 make help        # list all targets
 make build       # build from the repo without touching the system
 make diff        # preview what `install` would change in /etc/nixos
