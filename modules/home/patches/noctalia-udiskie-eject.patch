@@ -1,0 +1,44 @@
+diff --git a/udiskie/panel.luau b/udiskie/panel.luau
+index 2aa798f..7cff991 100644
+--- a/udiskie/panel.luau
++++ b/udiskie/panel.luau
+@@ -21,10 +21,6 @@ local function ejectDevice(dev)
+     noctalia.runAsync("noctalia msg plugin aristides/udiskie:service all eject " .. shellQuote(dev))
+ end
+ 
+-local function detachDevice(dev)
+-    noctalia.runAsync("noctalia msg plugin aristides/udiskie:service all detach " .. shellQuote(dev))
+-end
+-
+ local function openPath(path)
+     noctalia.runAsync("noctalia msg plugin aristides/udiskie:service all open " .. shellQuote(path))
+     panel.close()
+@@ -160,13 +156,6 @@ local function renderDriveCard(drvItem)
+             controlSize = "sm",
+             onClick = function() ejectDevice(drv.device) end,
+         }),
+-        ui.button({
+-            glyph = "plug-off",
+-            tooltip = noctalia.tr("btn_poweroff"),
+-            variant = "destructive",
+-            controlSize = "sm",
+-            onClick = function() detachDevice(drv.device) end,
+-        }),
+     }
+ 
+     local partRows = {}
+diff --git a/udiskie/service.luau b/udiskie/service.luau
+index 236bff6..9f2a3c6 100644
+--- a/udiskie/service.luau
++++ b/udiskie/service.luau
+@@ -242,7 +242,9 @@ function onIpc(event, payload)
+             fetchDevices()
+         end, 10000)
+     elseif event == "eject" and payload then
+-        noctalia.runAsync("udiskie-umount -e " .. shellQuote(payload), function(res)
++        -- USB disks aren't "ejectable" (udiskie refuses); unmount all partitions, then power off instead.
++        local dev = shellQuote(payload)
++        noctalia.runAsync("udiskie-umount -f -e " .. dev .. " || udiskie-umount -f -d " .. dev, function(res)
+             if res and res.exitCode ~= 0 and noctalia.getConfig("enable_notifications") ~= false then
+                 noctalia.notifyError(noctalia.tr("notif_eject_failed_title"), cleanError(res.stderr, noctalia.tr("notif_eject_failed_fallback", { device = payload })))
+             end

@@ -9,11 +9,11 @@
     enable = true;
     config = {
       user = {
-        name = "PyDotDog";
-        email = "palubickimaciej5@gmail.com";
+        name = "MacPlb";
+        email = "macplb@proton.me";
       };
       core = {
-        sshCommand = "ssh -i ~/.ssh/id_ed25519";
+        sshCommand = "ssh -i ~/.ssh/macplb";
       };
     };
   };

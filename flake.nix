@@ -90,6 +90,8 @@
           git
           rsync
           nixfmt-tree
+          wf-recorder # screen recording for README showcases
+          ffmpeg # converts recordings to GIF
         ];
         shellHook = "make --no-print-directory help";
       };

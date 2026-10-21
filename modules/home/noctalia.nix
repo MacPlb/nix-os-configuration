@@ -59,6 +59,23 @@ in
     };
   };
 
+  # The udiskie plugin shells out to udiskie-info/-mount/-umount; services.udiskie doesn't put them on PATH.
+  home.packages = [ pkgs.udiskie ];
+
+  # Pinned, patched udiskie plugin; the local plugin dir overrides the community git copy.
+  xdg.dataFile."noctalia/plugins/udiskie".source = "${
+    pkgs.applyPatches {
+      name = "noctalia-community-plugins";
+      src = pkgs.fetchFromGitHub {
+        owner = "noctalia-dev";
+        repo = "community-plugins";
+        rev = "f62bad565c41ee37453314335a058304d42d42a5";
+        hash = "sha256-idkxPyY3mOZCHCQuU9oZKXkI756GYfRgq+w7mVr/XzE=";
+      };
+      patches = [ ./patches/noctalia-udiskie-eject.patch ];
+    }
+  }/udiskie";
+
   programs.noctalia = {
     enable = true;
     package =
@@ -117,6 +134,7 @@ in
         start = [
           "control-center"
           "workspaces"
+          "notifications"
           "media"
         ];
         center = [
@@ -124,10 +142,12 @@ in
           "weather"
         ];
         end = [
+          # Click to record: the portal dialog picks a window or a whole screen; click again to stop.
+          "noctalia/screen_recorder:recorder"
           "tray"
-          "notifications"
-          "caffeine"
           "nightlight"
+          # Mounted drives; click for the mount/unmount/eject panel.
+          "aristides/udiskie:status"
           "volume"
           "bluetooth"
           "network"
@@ -213,7 +233,10 @@ in
         default.path = "${../../static-files/wallpaper.png}";
       };
 
-      plugins.enabled = [ "noctalia/screen_recorder" ];
+      plugins.enabled = [
+        "noctalia/screen_recorder"
+        "aristides/udiskie"
+      ];
     };
   };
 }

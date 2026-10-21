@@ -6,6 +6,11 @@ user `friedrich`.
 
 ## Screenshots
 
+Showcase: Kitty with fastfetch, Neovim on the Kitty palette, Niri column
+scrolling (`Mod+W`, `Mod+H`) and the Noctalia launcher.
+
+![Niri desktop: terminals open in scrolling columns, then the Noctalia launcher opens](static-files/desktop-showcase.gif)
+
 Kitty terminal with the dark navy and purple palette.
 
 ![Kitty terminal showing the dark navy and purple desktop palette](static-files/desktop-preview.png)
@@ -61,7 +66,7 @@ The system builds from `/etc/nixos`. The `Makefile` copies this repo there
 and runs `nixos-rebuild`.
 
 ```sh
-nix develop      # provides make, git, rsync, nixfmt and prints the targets
+nix develop      # provides make, git, rsync, nixfmt, wf-recorder, ffmpeg and prints the targets
 nix fmt          # format all .nix files
 make check       # build the system (nix flake check)
 make help        # list all targets
@@ -71,6 +76,13 @@ make switch      # install, activate and set as boot default
 make test        # install and activate without a boot entry
 make update      # update flake.lock
 make rollback    # go back to the previous generation
+```
+
+To record a README GIF inside `nix develop` (stop the recording with Ctrl+C):
+
+```sh
+wf-recorder -o HDMI-A-1 -r 30 -f /tmp/rec.mp4
+ffmpeg -i /tmp/rec.mp4 -vf "fps=12,scale=1280:-1:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" static-files/desktop-showcase.gif
 ```
 
 Once installed, the `nixswitch` / `nixtest` / `nixboot` aliases (via `nh`)
