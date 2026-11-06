@@ -13,6 +13,20 @@
     in
     {
       programs.niri.enable = true;
+      # niri-session runs a bare `systemctl --user import-environment`, which systemd warns is
+      # deprecated; pass the variable names explicitly. Wrapped instead of overrideAttrs so niri
+      # isn't recompiled.
+      programs.niri.package = pkgs.symlinkJoin {
+        inherit (pkgs.niri) pname version passthru meta;
+        paths = [ pkgs.niri ];
+        postBuild = ''
+          rm $out/bin/niri-session
+          sed 's|systemctl --user import-environment$|systemctl --user import-environment $(awk '"'"'BEGIN{for(v in ENVIRON) if (v != "AWKPATH" \&\& v != "AWKLIBPATH") print v}'"'"')|' \
+            ${pkgs.niri}/bin/niri-session > $out/bin/niri-session
+          chmod +x $out/bin/niri-session
+          grep -q 'import-environment \$(awk' $out/bin/niri-session
+        '';
+      };
       # File dialogs come from the GTK portal (below), so the GNOME portal doesn't need Nautilus.
       programs.niri.useNautilus = false;
 

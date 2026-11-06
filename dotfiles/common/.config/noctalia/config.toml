@@ -126,10 +126,8 @@ enabled = false
 position = "top_center"
 
 [location]
-auto_locate = false
-address = "Bytow, Poland"
-latitude = 54.1706
-longitude = 17.4919
+# Weather follows wherever the machine is, geolocated from its public IP.
+auto_locate = true
 # Fixed night-light hours instead of sunset/sunrise from the coordinates.
 custom_schedule = true
 sunset = "18:00"
