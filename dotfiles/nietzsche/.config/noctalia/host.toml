@@ -1,0 +1,13 @@
+# nietzsche: the bar, notifications and OSDs stay on the main screen (HDMI-A-1).
+
+[bar.main.monitor.HDMI-A-2]
+# Bars spawn on every monitor; hide this one on the vertical screen.
+enabled = false
+
+[notification]
+monitors = ["HDMI-A-1"]
+follow_focused_output = false
+
+[osd]
+monitors = ["HDMI-A-1"]
+follow_focused_output = false

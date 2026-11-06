@@ -1,0 +1,19 @@
+// dostoyevsky: Latitude 5531 internal panel and touchpad. External monitors use niri's
+// automatic placement; pin them here with `output` blocks if needed.
+
+input {
+    touchpad {
+        tap
+        natural-scroll
+        dwt
+    }
+}
+
+output "eDP-1" {
+    scale 1.0
+}
+
+// Smaller mouse pointer than the default 24 on the 1x panel.
+cursor {
+    xcursor-size 16
+}

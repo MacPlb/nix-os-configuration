@@ -1,0 +1,6 @@
+[Desktop Entry]
+# Hidden from the launcher; terminal apps are started from kitty.
+Type=Application
+Name=Ranger
+Exec=ranger
+NoDisplay=true

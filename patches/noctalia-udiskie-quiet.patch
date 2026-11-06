@@ -1,0 +1,17 @@
+--- a/udiskie/service.luau
++++ b/udiskie/service.luau
+@@ -109,13 +109,8 @@
+         end
+     end
+ 
+-    -- 1. Device Insertion (Physical USB plugged in)
++    -- 1. Device Insertion: no notification, udiskie automounts and "Drive Mounted" follows.
+     if not isInitialFetch then
+-        for dev, label in pairs(currentAllDevs) do
+-            if not prevAllDevices[dev] then
+-                noctalia.notify(noctalia.tr("notif_drive_connected_title"), noctalia.tr("notif_drive_connected_body", { label = label }))
+-            end
+-        end
+         -- 2. Device Removal (Physical USB unplugged / powered off)
+         for dev, label in pairs(prevAllDevices) do
+             if not currentAllDevs[dev] then

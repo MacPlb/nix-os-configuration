@@ -1,0 +1,22 @@
+// nietzsche: Dell S2725QS (4K, 1.5x) on the left, MSI MAG271C rotated to portrait on the right.
+// Both modes confirmed with `niri msg outputs`. VRR stays off for a stable baseline.
+
+output "HDMI-A-1" {
+    mode "3840x2160@120.000"
+    scale 1.5
+    position x=0 y=0
+}
+
+output "HDMI-A-2" {
+    mode "1920x1080@120.000"
+    scale 1.0
+    transform "90"
+    position x=2560 y=0
+}
+
+debug {
+    wait-for-frame-completion-before-queueing
+    // Shortcut: avoids scanout format/bandwidth changes; remove once the AMD
+    // white-line artifacts are fixed upstream.
+    restrict-primary-scanout-to-matching-format
+}

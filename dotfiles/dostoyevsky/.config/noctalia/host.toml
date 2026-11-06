@@ -1,0 +1,19 @@
+# dostoyevsky: laptop widgets. Arrays replace the shared ones, so this is the whole list.
+
+[bar.main]
+end = [
+  "noctalia/screen_recorder:recorder",
+  "tray",
+  "nightlight",
+  "aristides/udiskie:status",
+  "brightness",
+  "volume",
+  "bluetooth",
+  "network",
+  "network_rx",
+  "network_tx",
+  # Needs services.upower and services.power-profiles-daemon (modules/features/laptop.nix).
+  "power_profile",
+  "battery",
+  "session",
+]

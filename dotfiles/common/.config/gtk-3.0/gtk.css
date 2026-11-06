@@ -1,0 +1,42 @@
+/* Theme colors on top of Adwaita-dark (GTK 3) and libadwaita (GTK 4).
+   colors.css is generated from modules/theme/colors.nix. */
+@import url("colors.css");
+
+@define-color theme_base_color @theme_bg_color;
+@define-color theme_text_color @theme_fg_color;
+@define-color selected_bg_color @theme_selected_bg_color;
+@define-color selected_fg_color @theme_selected_fg_color;
+@define-color theme_unfocused_bg_color @theme_bg_color;
+@define-color theme_unfocused_fg_color @theme_fg_color;
+@define-color theme_unfocused_base_color @theme_base_color;
+@define-color theme_unfocused_text_color @theme_text_color;
+@define-color theme_unfocused_selected_bg_color @theme_selected_bg_color;
+@define-color theme_unfocused_selected_fg_color @theme_selected_fg_color;
+@define-color window_bg_color @theme_bg_color;
+@define-color window_fg_color @theme_fg_color;
+@define-color view_bg_color @theme_base_color;
+@define-color view_fg_color @theme_text_color;
+@define-color headerbar_fg_color @theme_fg_color;
+@define-color sidebar_bg_color @headerbar_bg_color;
+@define-color sidebar_fg_color @theme_fg_color;
+@define-color card_bg_color @headerbar_bg_color;
+@define-color card_fg_color @theme_fg_color;
+@define-color dialog_bg_color @theme_bg_color;
+@define-color dialog_fg_color @theme_fg_color;
+@define-color popover_bg_color @headerbar_bg_color;
+@define-color popover_fg_color @theme_fg_color;
+
+/* Adwaita GTK 3 hardcodes blue in these controls. */
+selection, *:selected, check:checked, radio:checked,
+switch:checked, scale highlight, progressbar progress {
+  background-color: @theme_selected_bg_color;
+  background-image: none;
+  color: @theme_selected_fg_color;
+}
+button.suggested-action {
+  background-color: @theme_selected_bg_color;
+  background-image: none;
+  color: @theme_selected_fg_color;
+}
+*:focus { outline-color: @theme_selected_bg_color; }
+link, link:visited { color: @link_color; }

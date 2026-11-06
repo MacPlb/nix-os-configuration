@@ -1,5 +1,6 @@
 TARGET := /etc/nixos
-HOST   := nietzsche
+# Build for this machine by default; override with `make build HOST=dostoyevsky`.
+HOST   ?= $(shell hostname)
 FLAKE  := $(TARGET)\#$(HOST)
 
 # Mirror the repo into $(TARGET), deleting files there that are not in the repo.
@@ -25,7 +26,7 @@ install: ## Copy the repo to /etc/nixos, replacing its contents
 
 ## --- Build / activate -------------------------------------------------
 
-check: ## Evaluate the flake and run its checks (from the repo)
+check: ## Build all hosts, validate dotfiles and check formatting (from the repo)
 	nix flake check
 
 build: ## Build the system from the repo without installing (./result)

@@ -1,0 +1,6 @@
+[Desktop Entry]
+# Hidden from the launcher; terminal apps are started from kitty.
+Type=Application
+Name=Musikcube
+Exec=musikcube
+NoDisplay=true

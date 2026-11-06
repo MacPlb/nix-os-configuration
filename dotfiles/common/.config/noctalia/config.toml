@@ -1,0 +1,143 @@
+# Shared Noctalia settings. Noctalia merges every *.toml in this directory in name order,
+# so the host's host.toml overrides this file. [theme] and the palette are generated from
+# modules/theme/colors.nix as theme.toml and palettes/. Changes made in the settings window are
+# stored separately in ~/.local/state and take precedence over both.
+
+[shell]
+font_family = "JetBrainsMono Nerd Font"
+polkit_agent = true
+# Start typing in niri's overview (Mod+O) to open the launcher.
+niri_overview_type_to_launch_enabled = true
+avatar_path = "/etc/backgrounds/wallpaper.png"
+
+[shell.greeter_sync]
+# Push wallpaper, palette and font to the login greeter whenever they change.
+auto_sync = true
+
+[shell.screenshot]
+# Copy only; the editor's Save still writes to ~/Pictures.
+save_to_file = false
+copy_to_clipboard = true
+# Open the drawing editor after every capture; Ctrl+C in the region picker skips it.
+annotate = true
+skip_annotate_on_copy_save = true
+
+[shell.panel]
+control_center_placement = "attached"
+wallpaper_placement = "attached"
+session_placement = "attached"
+open_near_click_control_center = true
+open_near_click_wallpaper = true
+open_near_click_session = true
+
+[shell.launcher]
+pinned = [
+  "firefox",
+  "org.gnome.Nautilus",
+  "kitty",
+  "thunderbird",
+  "signal",
+  "vesktop",
+  "org.keepassxc.KeePassXC",
+  "org.gnome.Evince",
+]
+
+[bar.main]
+position = "top"
+background_opacity = 0.0
+compositor_blur = false
+capsule = true
+margin_ends = 0
+margin_edge = 0
+start = ["control-center", "workspaces", "notifications", "media"]
+center = ["clock", "weather"]
+end = [
+  # Click to record: the portal dialog picks a window or a whole screen; click again to stop.
+  "noctalia/screen_recorder:recorder",
+  "tray",
+  "nightlight",
+  # Mounted drives; click for the mount/unmount/eject panel.
+  "aristides/udiskie:status",
+  "volume",
+  "bluetooth",
+  "network",
+  "network_rx",
+  "network_tx",
+  "session",
+]
+
+[widget.control-center]
+# NixOS logo instead of Noctalia's owl (nixos-icons, modules/theme/apply.nix).
+custom_image = "/run/current-system/sw/share/icons/hicolor/scalable/apps/nix-snowflake.svg"
+
+[widget.clock]
+format = "{:%H:%M:%S}"
+
+[widget.workspaces]
+hide_when_empty = true
+label_source = "id"
+
+[widget.media]
+show_tooltip = false
+hide_when_no_media = true
+max_length = 800 # noctalia maximum
+
+[widget.tray]
+drawer = false
+hidden = ["nm-applet", "blueman", "blueman-applet"]
+
+[control_center]
+sidebar_section = "none"
+
+[backdrop]
+# Blurred wallpaper behind niri's overview (layer rule in niri/config.kdl).
+enabled = true
+
+[weather]
+enabled = true
+
+[nightlight]
+# Warmer screen 18:00-06:00 (location.custom_schedule); the bar widget toggles it off.
+enabled = true
+
+[calendar]
+# Accounts are added in Settings -> Calendar; events show in the control center.
+enabled = true
+
+[audio]
+enable_sounds = true
+enable_volume_sounds = false
+
+[lockscreen]
+blurred_desktop = true
+
+[idle.behavior.lock]
+timeout = 600
+action = "lock"
+
+[idle.behavior.screen-off]
+timeout = 660
+action = "screen_off"
+
+[dock]
+enabled = false
+
+[notification]
+position = "top_center"
+
+[location]
+auto_locate = false
+address = "Bytow, Poland"
+latitude = 54.1706
+longitude = 17.4919
+# Fixed night-light hours instead of sunset/sunrise from the coordinates.
+custom_schedule = true
+sunset = "18:00"
+sunrise = "06:00"
+
+[wallpaper.default]
+# /etc/backgrounds/wallpaper.png comes from static-files/ (modules/theme/apply.nix).
+path = "/etc/backgrounds/wallpaper.png"
+
+[plugins]
+enabled = ["noctalia/screen_recorder", "aristides/udiskie"]

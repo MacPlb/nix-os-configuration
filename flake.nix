@@ -1,26 +1,21 @@
 {
-  description = "Basic setup flake";
+  description = "NixOS for nietzsche (desktop) and dostoyevsky (laptop): Niri, Noctalia and plain dotfiles";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Structures the flake as modules; every file under modules/ is one (dendritic pattern).
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
     # Rust toolchains with rust-src bundled, so RustRover finds the stdlib
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
-    home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Niri Wayland compositor (provides programs.niri with Home Manager support)
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Noctalia desktop shell (status bar, notifications, widgets for Wayland)
@@ -34,71 +29,18 @@
       url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
   };
 
+  # Every .nix file under modules/ is a flake-parts module and is imported automatically;
+  # files starting with "_" are skipped (hardware configs, which are plain NixOS modules).
   outputs =
-    {
-      self,
-      nixpkgs,
-      nixpkgs-unstable,
-      home-manager,
-      niri,
-      ...
-    }@inputs:
+    inputs:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      pkgs-unstable = import nixpkgs-unstable {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = [ inputs.rust-overlay.overlays.default ];
-      };
+      inherit (inputs.nixpkgs) lib;
+
+      isModule = file: file.hasExt "nix" && !lib.hasPrefix "_" file.name;
     in
-    {
-      nixosConfigurations.nietzsche = nixpkgs.lib.nixosSystem {
-        inherit system;
-
-        specialArgs = { inherit inputs pkgs-unstable; };
-
-        modules = [
-          ./hosts/nietzsche
-
-          # Niri compositor NixOS module
-          niri.nixosModules.niri
-
-          inputs.noctalia-greeter.nixosModules.default
-
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.friedrich = import ./modules/home;
-            home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable; };
-          }
-        ];
-      };
-
-      # `nix fmt` formats every .nix file in the repo.
-      formatter.${system} = pkgs.nixfmt-tree;
-
-      # `nix develop`: tools for working on this repo, then `make help`.
-      devShells.${system}.default = pkgs.mkShell {
-        packages = with pkgs; [
-          gnumake
-          git
-          rsync
-          nixfmt-tree
-          wf-recorder # screen recording for README showcases
-          ffmpeg # converts recordings to GIF
-        ];
-        shellHook = "make --no-print-directory help";
-      };
-
-      # `nix flake check` also builds the system, so evaluation errors fail it.
-      checks.${system} = {
-        nietzsche = self.nixosConfigurations.nietzsche.config.system.build.toplevel;
-      };
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = lib.fileset.toList (lib.fileset.fileFilter isModule ./modules);
     };
 }

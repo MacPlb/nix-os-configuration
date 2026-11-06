@@ -1,0 +1,33 @@
+// Zed project settings for this repo: nixd with completion for NixOS options (taken from
+// nietzsche) and flake-parts options, formatting with nixfmt like `nix fmt`. Reads the
+// installed copy in /etc/nixos (`make install`), which has no uncommitted-file pitfalls.
+{
+  "languages": {
+    "Nix": {
+      "language_servers": ["nixd", "!nil"],
+      "formatter": { "external": { "command": "nixfmt" } },
+      "format_on_save": "on"
+    }
+  },
+  "lsp": {
+    "nixd": {
+      "settings": {
+        "nixpkgs": {
+          "expr": "import (builtins.getFlake \"/etc/nixos\").inputs.nixpkgs { }"
+        },
+        "formatting": { "command": ["nixfmt"] },
+        "options": {
+          "nixos": {
+            "expr": "(builtins.getFlake \"/etc/nixos\").nixosConfigurations.nietzsche.options"
+          },
+          "flake-parts": {
+            "expr": "(builtins.getFlake \"/etc/nixos\").debug.options"
+          },
+          "flake-parts-per-system": {
+            "expr": "(builtins.getFlake \"/etc/nixos\").currentSystem.options"
+          }
+        }
+      }
+    }
+  }
+}
