@@ -3,4 +3,5 @@
 Type=Application
 Name=Yazi
 Exec=yazi
+Terminal=true
 NoDisplay=true

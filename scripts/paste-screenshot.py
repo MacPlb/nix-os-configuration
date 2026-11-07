@@ -40,7 +40,7 @@ def main(directory):
     except subprocess.CalledProcessError:
         subprocess.run(["zenity", "--error", "--text=No PNG screenshot in the clipboard."])
     except (OSError, ValueError) as error:
-        subprocess.run(["zenity", "--error", f"--text=Could not save screenshot: {error}"])
+        subprocess.run(["zenity", "--error", "--no-markup", f"--text=Could not save screenshot: {error}"])
 
 
 if __name__ == "__main__":

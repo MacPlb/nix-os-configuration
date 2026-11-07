@@ -49,8 +49,8 @@ compositor_blur = false
 capsule = true
 margin_ends = 0
 margin_edge = 0
-start = ["control-center", "workspaces", "notifications", "media"]
-center = ["clock", "weather"]
+start = ["control-center", "workspaces", "notifications", "weather", "media"]
+center = ["clock"]
 end = [
   # Click to record: the portal dialog picks a window or a whole screen; click again to stop.
   "noctalia/screen_recorder:recorder",
@@ -71,7 +71,8 @@ end = [
 custom_image = "/run/current-system/sw/share/icons/hicolor/scalable/apps/nix-snowflake.svg"
 
 [widget.clock]
-format = "{:%H:%M:%S}"
+# Time plus date as DD.MM.YYYY; clicking opens the calendar tab (Noctalia's default action).
+format = "{:%H:%M:%S  %d.%m.%Y}"
 
 [widget.workspaces]
 hide_when_empty = true
@@ -80,7 +81,8 @@ label_source = "id"
 [widget.media]
 show_tooltip = false
 hide_when_no_media = true
-max_length = 800 # noctalia maximum
+# Capped so a long title stops before the centered clock instead of running under it.
+max_length = 300
 
 [widget.tray]
 drawer = false
@@ -126,8 +128,12 @@ enabled = false
 position = "top_center"
 
 [location]
-# Weather follows wherever the machine is, geolocated from its public IP.
-auto_locate = true
+# Fixed to Bytów: IP geolocation resolved to the ISP's exit point (Warsaw).
+auto_locate = false
+address = "Bytów, Poland"
+# Fallback if geocoding the address fails.
+latitude = 54.1706
+longitude = 17.4920
 # Fixed night-light hours instead of sunset/sunrise from the coordinates.
 custom_schedule = true
 sunset = "18:00"

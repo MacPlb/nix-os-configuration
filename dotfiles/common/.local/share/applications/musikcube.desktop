@@ -3,4 +3,5 @@
 Type=Application
 Name=Musikcube
 Exec=musikcube
+Terminal=true
 NoDisplay=true

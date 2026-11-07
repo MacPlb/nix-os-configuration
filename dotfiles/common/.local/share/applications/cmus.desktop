@@ -3,4 +3,5 @@
 Type=Application
 Name=Cmus
 Exec=cmus
+Terminal=true
 NoDisplay=true

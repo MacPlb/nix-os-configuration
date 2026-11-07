@@ -3,7 +3,27 @@
   flake.nixosModules.development =
     { config, pkgs, ... }:
     {
-      virtualisation.docker.enable = true;
+      virtualisation.docker = {
+        enable = true;
+        # Weekly cleanup of dangling images, build cache, unused networks and containers that
+        # have been stopped for over a week. Volumes (database data) are never touched.
+        autoPrune = {
+          enable = true;
+          dates = "weekly";
+          flags = [
+            "--filter"
+            "until=168h"
+          ];
+        };
+        # Without a cap, a chatty container's log grows until the disk is full.
+        daemon.settings = {
+          log-driver = "json-file";
+          log-opts = {
+            max-size = "10m";
+            max-file = "3";
+          };
+        };
+      };
       users.users.${config.my.user}.extraGroups = [ "docker" ];
 
       programs.git = {
@@ -15,7 +35,23 @@
           };
           core = {
             sshCommand = "ssh -i ~/.ssh/macplb";
+            # Side-by-side-capable, syntax-highlighted diffs in log/show/diff.
+            pager = "delta";
           };
+          interactive.diffFilter = "delta --color-only";
+          delta = {
+            navigate = true; # n/N jump between files
+            line-numbers = true;
+          };
+          merge.conflictStyle = "zdiff3";
+          init.defaultBranch = "main";
+          pull.rebase = true;
+          rebase.autoStash = true;
+          push.autoSetupRemote = true;
+          fetch.prune = true;
+          # Remember how a conflict was resolved and reapply it the next time it shows up.
+          rerere.enabled = true;
+          diff.colorMoved = "default";
         };
       };
 
@@ -25,13 +61,15 @@
         # Utils
         bat
         ripgrep
+        delta # git pager (programs.git above)
 
         # IDE
         unstable.jetbrains.pycharm
         unstable.jetbrains.rust-rover
         unstable.jetbrains.rider
         zellij
-        vscode
+        # Stable 1.144.0 fails in patchPhase (bundled ripgrep moved); unstable has the fix.
+        unstable.vscode
         zed-editor
 
         # Containers, infrastructure, APIs and databases
@@ -50,6 +88,21 @@
         })
         gcc
         nodejs
+
+        # Faster Rust builds, wired up in dotfiles/common/.cargo/config.toml: mold links,
+        # sccache caches compiled dependencies across projects (~/.cache/sccache).
+        mold
+        sccache
+        cargo-nextest # faster test runner: `cargo nextest run`
+        cargo-watch # rerun on save: `cargo watch -x check`
+
+        # Language servers and debuggers for Zed/VS Code outside the JetBrains IDEs
+        gopls
+        delve
+        pyright
+        ruff
+        typescript-language-server
+        typescript
 
         # Nix language servers and formatter (editor setup: .zed/settings.json, README)
         nixd

@@ -1,6 +1,10 @@
 # Nautilus action: save a GIF next to each selected video.
 for video in "$@"; do
-  gif="${video%.*}.gif"
+  # Strip the extension from the file name only, so /a.b/clip doesn't become /a.gif.
+  case "${video##*/}" in
+    *.*) gif="${video%.*}.gif" ;;
+    *) gif="$video.gif" ;;
+  esac
   # ffmpeg -n exits 0 when the output exists, so check first.
   if [ -e "$gif" ]; then
     notify-send -u critical -i dialog-error "GIF not created" "$gif already exists"

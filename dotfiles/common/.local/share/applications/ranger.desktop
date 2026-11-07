@@ -3,4 +3,5 @@
 Type=Application
 Name=Ranger
 Exec=ranger
+Terminal=true
 NoDisplay=true

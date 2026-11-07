@@ -3,4 +3,5 @@
 Type=Application
 Name=Htop
 Exec=htop
+Terminal=true
 NoDisplay=true

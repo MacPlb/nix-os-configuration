@@ -20,6 +20,7 @@
         self.nixosModules.development
         self.nixosModules.dotnet
         self.nixosModules.creative
+        self.nixosModules.latex
         self.nixosModules.ai
       ];
 
@@ -36,6 +37,20 @@
       # right away instead of the low-res EFI framebuffer.
       boot.loader.systemd-boot.consoleMode = "max";
       boot.initrd.kernelModules = [ "i915" ];
+
+      # Small cursor: Adwaita starts at 24px, Bibata has a 16px size (niri's host.kdl picks it).
+      environment.systemPackages = [ pkgs.bibata-cursors ];
+
+      # Login screen: the greeter auto-scales the 14" panel up; keep it at 1x like the desktop,
+      # with the same small cursor.
+      services.displayManager.noctalia-greeter.settings = {
+        output.scale = 1.0;
+        cursor = {
+          theme = "Bibata-Modern-Classic";
+          size = 16;
+          path = pkgs.bibata-cursors;
+        };
+      };
 
       # Iris Xe: VA-API (iHD) and oneVPL video decoding/encoding.
       hardware.graphics.extraPackages = with pkgs; [

@@ -9,6 +9,9 @@
     # Bluetooth stays off until toggled, to save battery.
     hardware.bluetooth.powerOnBoot = false;
 
+    # Docker starts on the first `docker` command (socket activation) instead of at boot.
+    virtualisation.docker.enableOnBoot = false;
+
     # Suspend on lid close, but not while docked with the lid shut.
     services.logind.settings.Login = {
       HandleLidSwitch = "suspend";

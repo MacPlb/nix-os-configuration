@@ -17,6 +17,7 @@
       self.nixosModules.development
       self.nixosModules.dotnet
       self.nixosModules.creative
+      self.nixosModules.latex
       self.nixosModules.ai
     ];
 

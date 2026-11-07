@@ -17,7 +17,12 @@
       # deprecated; pass the variable names explicitly. Wrapped instead of overrideAttrs so niri
       # isn't recompiled.
       programs.niri.package = pkgs.symlinkJoin {
-        inherit (pkgs.niri) pname version passthru meta;
+        inherit (pkgs.niri)
+          pname
+          version
+          passthru
+          meta
+          ;
         paths = [ pkgs.niri ];
         postBuild = ''
           rm $out/bin/niri-session

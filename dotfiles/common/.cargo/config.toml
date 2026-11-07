@@ -1,0 +1,10 @@
+# User-wide Cargo settings; a project's own .cargo/config.toml is merged on top.
+# Tools come from modules/features/development.nix.
+
+[build]
+# Cache compiled dependencies across projects and `cargo clean` (~/.cache/sccache, 10 GB).
+rustc-wrapper = "sccache"
+
+[target.x86_64-unknown-linux-gnu]
+# Link with mold, several times faster than GNU ld on large binaries.
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]

@@ -3,4 +3,5 @@
 Type=Application
 Name=Btop
 Exec=btop
+Terminal=true
 NoDisplay=true
