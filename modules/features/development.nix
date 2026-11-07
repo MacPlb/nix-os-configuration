@@ -34,7 +34,6 @@
             email = "macplb@proton.me";
           };
           core = {
-            sshCommand = "ssh -i ~/.ssh/macplb";
             # Side-by-side-capable, syntax-highlighted diffs in log/show/diff.
             pager = "delta";
           };
@@ -54,6 +53,15 @@
           diff.colorMoved = "default";
         };
       };
+
+      # GitHub key: ~/.ssh/macplb on one machine, ~/.ssh/id_ed25519 on another. Unlike `ssh -i`,
+      # IdentityFile entries that don't exist are skipped silently.
+      programs.ssh.extraConfig = ''
+        Host github.com
+          IdentityFile ~/.ssh/macplb
+          IdentityFile ~/.ssh/id_ed25519
+          IdentitiesOnly yes
+      '';
 
       environment.shellAliases.zj = "zellij";
 
