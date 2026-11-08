@@ -25,6 +25,16 @@ return {
   { "catppuccin/nvim", enabled = false },
   { "akinsho/bufferline.nvim", enabled = false },
 
+  -- The `:` command line at the bottom, as in stock nvim, instead of noice's floating command
+  -- palette that LazyVim puts near the top of the screen.
+  {
+    "folke/noice.nvim",
+    opts = {
+      cmdline = { view = "cmdline" },
+      presets = { command_palette = false },
+    },
+  },
+
   {
     "ThePrimeagen/harpoon",
     lazy = false, -- the tabline reads its list from the start
