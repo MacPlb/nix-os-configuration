@@ -1,5 +1,5 @@
-# The graphical session: Noctalia Greeter, audio, polkit, removable media, plus the features
-# every desktop host gets (Niri, Noctalia, theme, kitty, Nautilus).
+# Graphical session: greeter, audio, polkit, removable media, and the desktop features
+# (Niri, Noctalia, theme, kitty, Nautilus).
 {
   config,
   inputs,

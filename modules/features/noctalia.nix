@@ -1,7 +1,7 @@
-# Noctalia shell as a systemd user service, plus the udiskie automounter its drive plugin uses.
-# Noctalia merges every *.toml in ~/.config/noctalia in name order: config.toml from
-# dotfiles/common, the host's host.toml (monitors, laptop widgets), then the generated
-# theme.toml (modules/theme/apply.nix).
+# Noctalia shell as a systemd user service, plus udiskie for its drive plugin.
+#
+# Noctalia merges every *.toml in ~/.config/noctalia in name order: config.toml, then the
+# host's host.toml, then the generated theme.toml.
 { inputs, ... }:
 
 {
@@ -38,9 +38,9 @@
         rel: _: lib.hasPrefix ".config/noctalia/" rel
       ) config.dotfiles.files;
 
-      # The settings window (and first-run setup) store [theme] in settings.toml, which wins over
-      # the config files and falls back to the yellow builtin "Noctalia" palette. Drop it on every
-      # start so the palette from modules/theme/colors.nix always applies; other GUI settings stay.
+      # The settings window stores [theme] in settings.toml, which overrides the config files and
+      # falls back to the built-in yellow palette. Remove that section on start; other GUI
+      # settings are left alone.
       stripThemeOverrides = pkgs.writeShellScript "noctalia-strip-theme-overrides" ''
         f="''${XDG_STATE_HOME:-$HOME/.local/state}/noctalia/settings.toml"
         [ -f "$f" ] || exit 0
@@ -78,7 +78,7 @@
 
       environment.shellAliases.noctalia-restart = "systemctl --user restart noctalia.service";
 
-      # Fail the build, not the session, on an invalid shell config.
+      # Validate the shell config during the build.
       system.checks = [
         (pkgs.runCommand "noctalia-config-check" { } ''
           export HOME=$TMPDIR

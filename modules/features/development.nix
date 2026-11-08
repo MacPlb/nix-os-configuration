@@ -5,8 +5,8 @@
     {
       virtualisation.docker = {
         enable = true;
-        # Weekly cleanup of dangling images, build cache, unused networks and containers that
-        # have been stopped for over a week. Volumes (database data) are never touched.
+        # Clean up old containers, images, build cache and networks weekly. Volumes are left
+        # alone.
         autoPrune = {
           enable = true;
           dates = "weekly";
@@ -15,7 +15,7 @@
             "until=168h"
           ];
         };
-        # Without a cap, a chatty container's log grows until the disk is full.
+        # Cap container logs so they can't fill the disk.
         daemon.settings = {
           log-driver = "json-file";
           log-opts = {
@@ -34,7 +34,7 @@
             email = "macplb@proton.me";
           };
           core = {
-            # Side-by-side-capable, syntax-highlighted diffs in log/show/diff.
+            # Syntax-highlighted diffs.
             pager = "delta";
           };
           interactive.diffFilter = "delta --color-only";
@@ -48,14 +48,14 @@
           rebase.autoStash = true;
           push.autoSetupRemote = true;
           fetch.prune = true;
-          # Remember how a conflict was resolved and reapply it the next time it shows up.
+          # Reuse recorded conflict resolutions.
           rerere.enabled = true;
           diff.colorMoved = "default";
         };
       };
 
-      # GitHub key: ~/.ssh/macplb on one machine, ~/.ssh/id_ed25519 on another. Unlike `ssh -i`,
-      # IdentityFile entries that don't exist are skipped silently.
+      # GitHub key: macplb on one machine, id_ed25519 on the other. Missing IdentityFile
+      # entries are skipped.
       programs.ssh.extraConfig = ''
         Host github.com
           IdentityFile ~/.ssh/macplb
@@ -97,8 +97,7 @@
         gcc
         nodejs
 
-        # Faster Rust builds, wired up in dotfiles/common/.cargo/config.toml: mold links,
-        # sccache caches compiled dependencies across projects (~/.cache/sccache).
+        # Faster Rust builds; configured in dotfiles/common/.cargo/config.toml.
         mold
         sccache
         cargo-nextest # faster test runner: `cargo nextest run`

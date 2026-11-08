@@ -1,7 +1,5 @@
-# LaTeX for documents and Beamer presentations: TeX Live medium plus the extra packages below
-# (a fraction of texliveFull's size), latexmk to build, texlab for editor completion and zathura
-# to preview with SyncTeX. TeXstudio is the GUI editor: built-in PDF preview with SyncTeX
-# (click in the PDF to jump to the source), a Beamer frame outline and a Quick Beamer wizard.
+# LaTeX and Beamer: TeX Live medium plus the packages below, latexmk, texlab and zathura.
+# TeXstudio is the GUI editor and supports SyncTeX.
 {
   flake.nixosModules.latex =
     { pkgs, ... }:

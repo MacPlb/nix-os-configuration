@@ -1,4 +1,4 @@
-# Laptop on battery: power reporting and profiles for Noctalia's widgets, lid handling.
+# Laptop power reporting and profiles, plus lid handling.
 {
   flake.nixosModules.laptop = {
     # Battery level and charging state for Noctalia's battery widget.
@@ -6,10 +6,10 @@
     # Balanced/power-saver/performance switching from Noctalia's power profile widget.
     services.power-profiles-daemon.enable = true;
 
-    # Bluetooth stays off until toggled, to save battery.
+    # Bluetooth starts off.
     hardware.bluetooth.powerOnBoot = false;
 
-    # Docker starts on the first `docker` command (socket activation) instead of at boot.
+    # Docker starts on the first `docker` command (socket activation).
     virtualisation.docker.enableOnBoot = false;
 
     # Suspend on lid close, but not while docked with the lid shut.

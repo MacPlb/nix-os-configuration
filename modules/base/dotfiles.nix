@@ -1,10 +1,8 @@
-# Links plain dotfiles into the primary user's home, without Home Manager.
+# Links dotfiles from dotfiles/common and dotfiles/<hostname> into $HOME.
 #
-# dotfiles/common/ and dotfiles/<hostname>/ mirror $HOME: dotfiles/common/.config/kitty/kitty.conf
-# becomes ~/.config/kitty/kitty.conf. Host files win over common ones with the same path.
-# Each file is copied into the Nix store and linked with systemd-tmpfiles, which runs at boot and
-# on every switch. Links replace whatever is at that path; directories above them are created
-# owned by the user. Files are linked one by one so apps can keep their own state next to them.
+# Paths mirror the home directory, and host files override common ones. Each file is copied
+# into the Nix store and linked with systemd-tmpfiles at boot and on every switch. Files are
+# linked individually so apps can keep their own state next to them.
 {
   flake.nixosModules.base =
     { config, lib, ... }:
@@ -23,7 +21,7 @@
           )
         );
 
-      # Copy one file into the store on its own, so editing one dotfile doesn't relink the others.
+      # Copy each file into the store separately so editing one doesn't relink the others.
       # Store names can't start with a dot, hence the prefix.
       toStore =
         rel: source:

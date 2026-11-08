@@ -6,13 +6,13 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Structures the flake as modules; every file under modules/ is one (dendritic pattern).
+    # Module system for the flake itself.
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    # Rust toolchains with rust-src bundled, so RustRover finds the stdlib
+    # Rust toolchains with rust-src for RustRover.
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -31,8 +31,8 @@
     };
   };
 
-  # Every .nix file under modules/ is a flake-parts module and is imported automatically;
-  # files starting with "_" are skipped (hardware configs, which are plain NixOS modules).
+  # Every .nix file under modules/ is imported as a flake-parts module. Files starting
+  # with "_" are skipped (the hardware configs).
   outputs =
     inputs:
     let

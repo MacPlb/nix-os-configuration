@@ -4,8 +4,8 @@
 {
   systems = [ "x86_64-linux" ];
 
-  # Exposes the flake-parts options as `debug.options`, so nixd can complete `flake.*` and
-  # `perSystem` in modules/ (see .zed/settings.json).
+  # Adds the flake-parts options as `debug.options` for nixd completions (see
+  # .zed/settings.json).
   debug = true;
 
   perSystem =
@@ -27,8 +27,8 @@
         shellHook = "make --no-print-directory help";
       };
 
-      # `nix flake check` builds every host (including the niri/noctalia config validation in
-      # system.checks), fails on unformatted Nix files and on colors defined outside the theme.
+      # `nix flake check` builds every host, checks formatting and rejects hex colors
+      # outside colors.nix.
       checks =
         lib.mapAttrs (_: host: host.config.system.build.toplevel) (
           lib.filterAttrs (_: host: host.pkgs.stdenv.hostPlatform.system == system) self.nixosConfigurations
@@ -39,7 +39,7 @@
             touch $out
           '';
 
-          # modules/theme/colors.nix is the only place colors are written down.
+          # colors.nix is the only place hex colors are allowed.
           single-color-source = pkgs.runCommand "check-single-color-source" { } ''
             cd ${self}
             if grep -rnIE '#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?\b' dotfiles modules \

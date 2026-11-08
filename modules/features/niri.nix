@@ -1,5 +1,5 @@
-# Niri compositor from nixpkgs. Its config is dotfiles/common/.config/niri/config.kdl, which
-# includes the generated theme.kdl and the host's dotfiles/<hostname>/.config/niri/host.kdl.
+# Niri from nixpkgs. The config is dotfiles/common/.config/niri/config.kdl, which includes
+# the generated theme and the host's host.kdl.
 {
   flake.nixosModules.niri =
     {
@@ -13,9 +13,8 @@
     in
     {
       programs.niri.enable = true;
-      # niri-session runs a bare `systemctl --user import-environment`, which systemd warns is
-      # deprecated; pass the variable names explicitly. Wrapped instead of overrideAttrs so niri
-      # isn't recompiled.
+      # niri-session calls `systemctl --user import-environment` without names, which systemd
+      # warns about. Wrap the script to pass the names; overrideAttrs would recompile niri.
       programs.niri.package = pkgs.symlinkJoin {
         inherit (pkgs.niri)
           pname
@@ -61,7 +60,7 @@
         }
       ];
 
-      # Fail the build, not the login, on a broken niri config.
+      # Validate the config during the build.
       system.checks = [
         (pkgs.runCommand "niri-config-check" { } ''
           mkdir niri

@@ -1,15 +1,14 @@
-# Neovim running LazyVim, with every plugin, grammar, language server, formatter and debugger from
-# Nix. lazy.nvim loads the plugins from one folder in the store (NVIM_LAZY_PLUGINS) and never
-# downloads anything; Mason is off. The config is dotfiles/common/.config/nvim (keys: cheatsheet.md
-# there, <F1> in nvim) and its colors come from the generated lua/theme.lua (modules/theme/apply.nix).
+# Neovim with LazyVim. Plugins, grammars, language servers, formatters and debuggers come from
+# Nix; lazy.nvim never downloads and Mason is off. The config is in
+# dotfiles/common/.config/nvim (press <F1> for the keys). Colors come from the generated
+# lua/theme.lua.
 {
   flake.nixosModules.neovim =
     { lib, pkgs, ... }:
     let
       vp = pkgs.vimPlugins;
 
-      # Compiled grammars and their queries in one folder (parser/, queries/), nvim-treesitter's
-      # install_dir (NVIM_TS_PARSERS): LazyVim sees them as installed and builds nothing.
+      # All grammars and queries in one folder; LazyVim sees them as installed.
       grammars = pkgs.symlinkJoin {
         name = "nvim-treesitter-grammars";
         paths =
@@ -61,8 +60,8 @@
           ])).dependencies;
       };
 
-      # neotest-dotnet expects the pre-0.11 iter_matches(), where a capture is one node; it's a
-      # list of nodes now. Without this no test is found ("attempt to call method 'start'").
+      # neotest-dotnet still expects the pre-0.11 iter_matches() shape, where a capture is one
+      # node. Without this patch no test is found.
       neotest-dotnet = vp.neotest-dotnet.overrideAttrs (old: {
         postPatch = (old.postPatch or "") + ''
           substituteInPlace lua/neotest-dotnet/framework-discovery.lua \
@@ -85,8 +84,8 @@
       # debugpy for nvim-dap-python; the project's own venv still runs the code.
       debugpy = pkgs.python3.withPackages (p: [ p.debugpy ]);
 
-      # Named like the repos in LazyVim's specs ("folke/snacks.nvim" -> snacks.nvim): lazy.nvim's
-      # dev.path. A plugin a spec needs but this lacks shows up as "not installed" in :Lazy.
+      # Names must match the repos in LazyVim's specs. Missing plugins show as not installed
+      # in :Lazy.
       lazyPlugins = pkgs.linkFarm "lazy-plugins" {
         "lazy.nvim" = vp.lazy-nvim;
         "LazyVim" = vp.LazyVim;

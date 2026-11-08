@@ -1,5 +1,4 @@
-# Shape of the color scheme in colors.nix. Every role must be set and be a #rrggbb color, so a
-# typo or missing color fails evaluation instead of producing a half-themed desktop.
+# Option types for colors.nix. Each role needs a #rrggbb value.
 { lib, ... }:
 
 let

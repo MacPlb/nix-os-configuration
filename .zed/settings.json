@@ -1,6 +1,5 @@
-// Zed project settings for this repo: nixd with completion for NixOS options (taken from
-// nietzsche) and flake-parts options, formatting with nixfmt like `nix fmt`. Reads the
-// installed copy in /etc/nixos (`make install`), which has no uncommitted-file pitfalls.
+// Zed settings: nixd with NixOS and flake-parts completions, and nixfmt on save.
+// nixd reads /etc/nixos, so run `make install` first.
 {
   "languages": {
     "Nix": {

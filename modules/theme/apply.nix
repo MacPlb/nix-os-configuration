@@ -1,7 +1,5 @@
-# Applies the color scheme from colors.nix everywhere: theme packages, Qt palette, GSettings,
-# GTK/Qt settings files, and a generated color file per app, linked next to the app's hand-written dotfile, which
-# includes it (kitty theme.conf, niri theme.kdl, gtk colors.css, nvim lua/theme.lua, zellij
-# themes/system.kdl, Noctalia).
+# Writes the color files for each app from colors.nix, plus the Qt palette and GSettings.
+# The generated files sit next to the hand-written dotfiles, which include them.
 { config, ... }:
 
 let

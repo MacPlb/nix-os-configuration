@@ -1,9 +1,7 @@
-# The color scheme: the only file that contains colors. Change a value and rebuild; kitty,
-# niri, Neovim, Zellij, GTK 2/3/4, Qt 5/6, Noctalia and the login greeter all follow
-# (modules/theme/apply.nix writes their color files). `make check` fails on a hex color
-# anywhere else in modules/ or dotfiles/, so nothing can drift out of sync.
+# Color scheme. This is the only file that should contain hex values; modules/theme/apply.nix
+# writes the per-app color files from it, and `make check` rejects hex colors elsewhere.
 #
-# Every value is checked against modules/theme/options.nix, which documents each role.
+# The option types are in modules/theme/options.nix.
 {
   theme = {
     name = "Purple";

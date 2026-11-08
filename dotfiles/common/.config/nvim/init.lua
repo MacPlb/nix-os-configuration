@@ -1,8 +1,6 @@
--- LazyVim (https://lazyvim.org) on lazy.nvim. Nix supplies every plugin, language server,
--- formatter and debugger (modules/features/neovim.nix): lazy.nvim loads plugins from a folder in
--- the Nix store, never downloads or updates them, and Mason is off.
--- Our settings: lua/config/ (options, keymaps, autocmds), lua/plugins/ (plugin specs).
--- Keys: cheatsheet.md next to this file (<F1> in nvim), <Space>sk searches every key.
+-- LazyVim on lazy.nvim. Nix supplies the plugins, language servers, formatters and debuggers
+-- (modules/features/neovim.nix); lazy.nvim loads them from the store, and Mason is off.
+-- Settings: lua/config/ and lua/plugins/. Keys: cheatsheet.md (<F1>), <Space>sk searches them.
 local plugins = vim.env.NVIM_LAZY_PLUGINS -- set by the Nix wrapper
 if not plugins then
   vim.api.nvim_echo({ { "NVIM_LAZY_PLUGINS is unset; start the nvim that Nix installs", "ErrorMsg" } }, true, {})

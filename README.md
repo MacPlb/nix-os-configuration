@@ -1,36 +1,36 @@
-<div align="center">
-
 # nix-os-configuration
 
-**A NixOS flake for two machines with a Niri Wayland desktop, the Noctalia shell, one color file and plain dotfiles.**
+NixOS setup for my desktop and laptop. Niri with the Noctalia shell, no Home Manager, and
+one color file that every app reads.
 
-No Home Manager · one palette for every app · every config checked at build time
+![Niri desktop with terminals in scrolling columns, then the Noctalia launcher](static-files/desktop-showcase.gif)
 
-![Niri desktop: terminals open in scrolling columns, then the Noctalia launcher opens](static-files/desktop-showcase.gif)
-
-</div>
-
-## Highlights
-
-- **Scrolling tiling with Niri**: windows open in columns that you scroll through, with
-  Noctalia providing the bar, launcher, notifications, clipboard history, screenshots, lock
-  screen and login greeter.
-- **One color scheme**: `modules/theme/colors.nix` is the only file that contains colors.
-  kitty, Niri, Neovim, Zellij, GTK 2/3/4, Qt 5/6, Noctalia and the greeter all use it, and
-  `make check` fails if a hex color appears anywhere else.
-- **Plain dotfiles**: `dotfiles/` mirrors `$HOME` and NixOS links every file into place.
-  There is no Home Manager.
-- **Configs validated at build time**: a broken Niri or Noctalia config fails the build, so
-  you never log in to a broken desktop.
-- **Dendritic layout**: every `.nix` file under `modules/` is a flake-parts module that is
-  imported automatically. To add a feature, create a file.
-- **Development tools from Nix**: LazyVim with all its language servers, .NET 8/9/10,
-  Rust, Go, Python, Docker, JetBrains IDEs and Zed.
+## Machines
 
 | Host | Machine | User | Profile |
 |------|---------|------|---------|
 | `nietzsche` (main) | Desktop: Ryzen 5 7500F, RX 7700 XT | `friedrich` | `workstation` |
 | `dostoyevsky` | Dell Latitude 5531: i7-12800H, Iris Xe + GeForce MX550, 32 GB, 2 × 512 GB | `fiodor` | `laptop` |
+
+## Overview
+
+Niri handles the scrolling tiling. Noctalia provides the bar, launcher, notifications,
+clipboard history, screenshots, lock screen and login greeter.
+
+All colors are in `modules/theme/colors.nix`. kitty, Niri, Neovim, Zellij, GTK 2/3/4,
+Qt 5/6, Noctalia and the greeter read from it, and `make check` fails if another file
+contains a hex color.
+
+`dotfiles/` mirrors `$HOME`. NixOS links each file into place; there is no Home Manager.
+
+The Niri and Noctalia configs are checked during the build, so a bad config fails before
+login.
+
+`modules/` uses the dendritic pattern. Every `.nix` file is a flake-parts module and is
+imported automatically, so adding a feature usually means adding a file.
+
+Development tools come from Nix: LazyVim with its language servers, .NET 8/9/10, Rust,
+Go, Python, Docker, the JetBrains IDEs and Zed.
 
 <table>
   <tr>
@@ -43,28 +43,25 @@ No Home Manager · one palette for every app · every config checked at build ti
   </tr>
 </table>
 
-## Quick start
+## Usage
 
-The system builds from `/etc/nixos`. The `Makefile` copies this repo there and runs
+The system builds from `/etc/nixos`. The Makefile copies this repo there and runs
 `nixos-rebuild` for `HOST`, which defaults to the machine's hostname.
 
 ```sh
 nix develop      # make, git, rsync, nixfmt, wf-recorder, ffmpeg; prints the targets
 make check       # build both hosts, validate dotfiles, check formatting
-make switch      # copy to /etc/nixos, activate and set as the boot default
+make switch      # copy to /etc/nixos, activate, set as the boot default
 ```
 
-> [!WARNING]
-> `make install` (run by `switch`, `test` and `boot`) uses rsync `--delete`, so anything in
-> `/etc/nixos` that isn't in the repo is removed.
-
-## Everyday commands
+`make install` (called by `switch`, `test` and `boot`) uses rsync `--delete`. Anything in
+`/etc/nixos` that isn't in this repo will be removed.
 
 ### Updating
 
 Run `nixupdate` inside the repo, or anywhere if `NIXOS_REPO` is set. It updates
-`flake.lock`, copies the repo to `/etc/nixos` and switches. `nh` then lists which package
-versions changed.
+`flake.lock`, copies the repo to `/etc/nixos` and switches. `nh` then lists package
+version changes.
 
 ```sh
 nixupdate                                  # update every input
@@ -72,8 +69,8 @@ nixupdate noctalia-shell nixpkgs-unstable  # update only these
 nixupdate --help                           # list the inputs
 ```
 
-`make update` and `make update-input INPUT=<name>` only change `flake.lock`, without
-switching.
+`make update` and `make update-input INPUT=<name>` only change `flake.lock`; they don't
+switch.
 
 ### Shell aliases
 
@@ -113,15 +110,15 @@ nix fmt                        # format all .nix files
 
 ## Layout
 
-Each file adds one feature to a named NixOS module, `flake.nixosModules.<feature>`, and
-each host lists the features it uses. Files starting with `_` are not auto-imported.
+Each file adds a NixOS module named `flake.nixosModules.<feature>`, and each host lists the
+features it uses. Files starting with `_` are skipped.
 
 ```
 flake.nix                    # Inputs; imports every file in modules/
 modules/
   parts.nix                  # Systems, formatter, devShell, checks
   theme/
-    colors.nix               #   THE color scheme: the only file with colors in it
+    colors.nix               #   the color scheme
     options.nix              #   Types and docs for every color role (validated)
     apply.nix                #   Writes each app's color file, Qt palette, GSettings
   base/                      # nixosModules.base, every host:
@@ -139,7 +136,8 @@ modules/
     neovim.nix, apps.nix     #   LazyVim; everyday apps and terminal tools
     development.nix          #   Docker, Git, IDEs, Zellij, toolchains, nixd/nil/nixfmt
     dotnet.nix               #   .NET SDKs 10/9/8, C# language servers, nix-ld libs
-    ai.nix, creative.nix
+    ai.nix                   #   opencode
+    creative.nix             #   image, video and audio tools
     workstation.nix          #   performance governor, scx_lavd, Bluetooth on
     laptop.nix               #   upower, power-profiles-daemon, lid handling
   hosts/<name>/
@@ -156,8 +154,8 @@ static-files/                # Wallpaper and README screenshots
 
 `modules/theme/colors.nix` holds the semantic roles (`background`, `surface`, `primary`,
 `selection`, …), the 16 terminal colors, the light/dark `mode`, the GNOME accent preset and
-the Papirus folder color. Edit it and rebuild. `modules/theme/apply.nix` generates a color
-file for each app, and the app's own dotfile includes it:
+the Papirus folder color. Change a value and rebuild. `modules/theme/apply.nix` writes a
+color file for each app, and the app's own dotfile includes it:
 
 | App | Generated file | Included from |
 |-----|----------------|---------------|
@@ -171,33 +169,37 @@ file for each app, and the app's own dotfile includes it:
 | Noctalia | `palettes/<name>.json`, `theme.toml` | merged after `config.toml` |
 | Login greeter | greeter settings | `services.displayManager.noctalia-greeter` |
 
-Every color must be a `#rrggbb` value and every role must be set, so a typo fails
-evaluation. Starship uses named ANSI colors and follows the terminal palette. Theme changes
-saved from Noctalia's settings window are removed each time the shell starts, so the palette
-from `colors.nix` always applies.
+Colors have to be `#rrggbb` and every role has to be set, so a typo fails evaluation.
+Starship uses named ANSI colors and follows the terminal palette. Noctalia's settings
+window can save theme changes, but they are removed each time the shell starts so
+`colors.nix` stays in charge.
 
 ## Dotfiles
 
-Every file under `dotfiles/common/` and `dotfiles/<hostname>/` is linked to the same path in
+Files under `dotfiles/common/` and `dotfiles/<hostname>/` are linked to the same path in
 your home directory. For example, `dotfiles/common/.config/kitty/kitty.conf` becomes
-`~/.config/kitty/kitty.conf`. If a host file has the same path as a common one, the host file
-wins.
+`~/.config/kitty/kitty.conf`. If a host file has the same path as a common one, the host
+file wins.
 
-- **Read-only links**: files are copied into the Nix store and linked with systemd-tmpfiles
-  at boot and on every switch. Edit the repo, not the files in your home directory. This
-  includes Zellij's `config.kdl`, which its built-in settings screen can no longer save.
-- **Only files are linked**, never whole directories, so apps can keep their own state next
-  to them.
-- **A link replaces whatever is at its path.** If you delete a dotfile from the repo, its
-  link is left behind; remove it by hand.
-- **Host overrides use includes**: Niri's `config.kdl` includes `host.kdl`, and Noctalia
-  merges every `*.toml` in name order, so `host.toml` overrides `config.toml`. TOML arrays
-  replace the shared ones instead of merging with them, so the laptop's bar repeats the whole
-  widget list.
-- **No store paths or home directories** appear in dotfiles: the wallpaper is at
-  `/etc/backgrounds/wallpaper.png`.
-- **Generated files**: modules can add files with `dotfiles.files."<path>" = <file>;`
-  (see `modules/theme/apply.nix`). These replace files at the same path in the tree.
+Files are copied into the Nix store and linked with systemd-tmpfiles at boot and on every
+switch. Edit the repo, not the files in your home. This includes Zellij's `config.kdl`,
+whose built-in settings screen can no longer save.
+
+Only files are linked, not directories, so apps can keep their own state next to them.
+
+A link replaces whatever is at its path. If you delete a dotfile from the repo, the old
+link stays behind and has to be removed by hand.
+
+Host overrides use includes. Niri's `config.kdl` includes `host.kdl`, and Noctalia merges
+every `*.toml` in name order, so `host.toml` overrides `config.toml`. TOML arrays replace
+the shared ones instead of merging, which is why the laptop's bar repeats the whole widget
+list.
+
+Dotfiles don't contain store paths or home directories. The wallpaper is at
+`/etc/backgrounds/wallpaper.png`.
+
+Modules can also add files with `dotfiles.files."<path>" = <file>;` (see
+`modules/theme/apply.nix`). Those replace files at the same path in the tree.
 
 <details>
 <summary>Migrating from Home Manager</summary>
@@ -225,19 +227,20 @@ systemctl --user daemon-reload
 | `Print` / `Shift+Print` / `Mod+Print` | Screenshot of a region / the screen / with annotations |
 | `Mod+Shift+Print` | Screenshot of a window (Niri) |
 | `Mod+Shift+R` | Screen recording (gpu-screen-recorder) |
-| `Mod+L` / `Mod+Escape` | Lock |
+| `Mod+Slash` / `Mod+Escape` | Lock |
 
 The screen locks after 10 minutes idle and turns off a minute later. Weather, night light
 (18:00–06:00) and the calendar use `[location]`; add calendar accounts in Settings →
-Calendar. GTK and Qt apps use purple accents and violet Papirus folders. After a theme
-change, restart apps, and log out and back in for the Qt platform setting.
+Calendar. GTK and Qt apps use purple accents and violet Papirus folders. Restart apps after
+a theme change, and log out and back in for the Qt platform setting.
 
 ## Editor
 
 Neovim runs [LazyVim](https://lazyvim.org) and is the default editor, including for text
-files opened from Nautilus. Nix provides every plugin, Tree-sitter grammar, language server,
-formatter and debugger; lazy.nvim never downloads anything and Mason is turned off. The
-config is in `dotfiles/common/.config/nvim`. Press `F1` (or run `:Cheatsheet`) for the keys.
+files opened from Nautilus. Nix provides the plugins, Tree-sitter grammars, language
+servers, formatters and debuggers. lazy.nvim never downloads anything and Mason is off.
+The config is in `dotfiles/common/.config/nvim`. Press `F1` (or run `:Cheatsheet`) for the
+keys.
 
 | Languages | Language servers |
 |-----------|------------------|
@@ -251,8 +254,8 @@ Debugging uses netcoredbg, Delve and debugpy, and tests run through neotest.
 <summary>.NET (Rider and Zed)</summary>
 
 `modules/features/dotnet.nix` installs one `dotnet` with the .NET 10, 9 and 8 SDKs (10 is
-the default; pin another version with `global.json`), plus `dotnet-ef`, CSharpier,
-netcoredbg, the OmniSharp, csharp-ls and Roslyn language servers, and Mono.
+the default; use `global.json` to pin another), plus `dotnet-ef`, CSharpier, netcoredbg,
+the OmniSharp, csharp-ls and Roslyn language servers, and Mono.
 
 - `DOTNET_ROOT` and `/etc/dotnet/install_location` point at the SDK. Log out and back in
   after the first switch.
@@ -260,10 +263,10 @@ netcoredbg, the OmniSharp, csharp-ls and Roslyn language servers, and Mono.
 - Prebuilt native binaries (global tools, `Grpc.Tools`' protoc, Avalonia/SkiaSharp) run
   through nix-ld with ICU, OpenSSL, Kerberos and the X11/font libraries.
 - inotify limits are raised for `dotnet watch`, hot reload and IDE file watchers.
-- .NET 8 and 9 leave support in November 2026. Once nixpkgs marks them insecure, they are
+- .NET 8 and 9 leave support in November 2026. When nixpkgs marks them insecure they are
   dropped with a build warning instead of breaking the build.
-- `dotnet workload install` can't write to the read-only SDK. MAUI and wasm workloads need a
-  writable SDK, for example one installed with `dotnet-install.sh`.
+- `dotnet workload install` can't write to the read-only SDK. MAUI and wasm workloads need
+  a writable SDK, for example one installed with `dotnet-install.sh`.
 
 **Rider** finds `dotnet` on `PATH` automatically. For HTTPS during development, run
 `dotnet dev-certs https` once; browsers need the certificate imported by hand.
@@ -290,9 +293,10 @@ instead, add this to `~/.config/zed/settings.json`:
 <details>
 <summary>Nix language server (Zed and Rider)</summary>
 
-nixd completes NixOS options (from `nietzsche`), flake-parts options and nixpkgs attributes.
-It reads the installed flake at `/etc/nixos`, so run `make install` once. The flake sets
-`debug = true` for this, which causes the "unknown flake output 'debug'" warning.
+nixd completes NixOS options (from `nietzsche`), flake-parts options and nixpkgs
+attributes. It reads the installed flake at `/etc/nixos`, so run `make install` once. The
+flake sets `debug = true` for this, which causes the "unknown flake output 'debug'"
+warning.
 
 - **Zed**: `.zed/settings.json` configures nixd and nixfmt; install the Nix extension when
   Zed offers it.
@@ -306,25 +310,29 @@ It reads the installed flake at `/etc/nixos`, so run `make install` once. The fl
 
 ### dostoyevsky (laptop)
 
-- The Intel GPU drives the screen. The MX550 stays powered off until you start an app with
-  `nvidia-offload <command>`. The laptop uses the LTS kernel so the NVIDIA driver always
-  builds.
-- The bar adds brightness, power profile and battery. Bluetooth starts off. Closing the lid
-  suspends, unless an external monitor is connected.
-- Only one NVMe drive is in use. To use the second one, format it and add a `fileSystems`
-  entry.
-- Before the first switch, check the GPU bus IDs with `lspci -D | grep -Ei 'vga|3d'`. If
-  they differ from `PCI:0:2:0` (Intel) and `PCI:1:0:0` (NVIDIA), update
-  `hardware.nvidia.prime`.
+The Intel GPU drives the screen. The MX550 stays powered off until you start an app with
+`nvidia-offload <command>`. The laptop uses the LTS kernel so the NVIDIA driver always
+builds.
+
+The bar adds brightness, power profile and battery. Bluetooth starts off. Closing the lid
+suspends, unless an external monitor is connected.
+
+Only one NVMe drive is in use. To use the second one, format it and add a `fileSystems`
+entry.
+
+Before the first switch, check the GPU bus IDs with `lspci -D | grep -Ei 'vga|3d'`. If they
+differ from `PCI:0:2:0` (Intel) and `PCI:1:0:0` (NVIDIA), update `hardware.nvidia.prime`.
 
 ### nietzsche (desktop)
 
-- The Dell S2725QS runs at 3840×2160, 120 Hz and 1.5× scale. The MSI MAG271C runs at
-  1920×1080, 120 Hz and 1× scale, rotated 90° (the bar is hidden on it). VRR is off.
-- Notifications, OSDs and panels opened from the bar appear only on `HDMI-A-1`.
-- The `performance` governor and `scx_lavd` (sched_ext) are on. The MT7921 Wi-Fi runs with
-  PCIe ASPM and power saving off. Nix builds run at idle CPU and I/O priority, so rebuilds
-  don't stall the desktop.
+The Dell S2725QS runs at 3840×2160, 120 Hz and 1.5× scale. The MSI MAG271C runs at
+1920×1080, 120 Hz and 1× scale, rotated 90° (the bar is hidden on it). VRR is off.
+
+Notifications, OSDs and panels opened from the bar appear only on `HDMI-A-1`.
+
+The `performance` governor and `scx_lavd` (sched_ext) are on. The MT7921 Wi-Fi runs with
+PCIe ASPM and power saving off. Nix builds run at idle CPU and I/O priority so rebuilds
+don't stall the desktop.
 
 <details>
 <summary>Troubleshooting display flicker (nietzsche)</summary>
@@ -333,8 +341,8 @@ Niri keeps a frame-completion workaround and restricts direct scanout to matchin
 formats. These are mitigations for intermittent white lines, not a confirmed hardware fix.
 This Niri release has no HDR output; keep HDR off in the Dell menu.
 
-If flashes persist, try turning off the wallpaper (`enabled = false` under `[wallpaper]` in
-`dotfiles/common/.config/noctalia/config.toml`), then check the logs:
+If flashes persist, try turning off the wallpaper (`enabled = false` under `[wallpaper]`
+in `dotfiles/common/.config/noctalia/config.toml`), then check the logs:
 
 ```sh
 journalctl --user -b -u niri --no-pager -g 'ERROR|WARN'
@@ -342,8 +350,8 @@ journalctl -b -k --no-pager -g 'amdgpu|drm|timeout'
 ```
 
 Earlier diagnostics recorded AMD display-buffer timeouts, MSI HDMI hotplug events and GLES
-texture upload errors. Unexpected hotplugs point to the cable, the port or the monitor's
-power settings, which no configuration can fix.
+texture upload errors. Unexpected hotplugs usually mean a cable, port or monitor power
+setting problem, which no config can fix.
 
 </details>
 
@@ -351,10 +359,10 @@ power settings, which no configuration can fix.
 <summary>Boot performance</summary>
 
 The measured baseline was 30.1 s to boot: 11.2 s firmware, 5.5 s loader and 8.4 s
-userspace. Recent changes haven't been benchmarked yet. Compare after a reboot with
+userspace. Recent changes haven't been benchmarked. Compare after a reboot with
 `systemd-analyze`, `systemd-analyze --user blame`, `systemctl --failed` and
-`systemctl --user --failed`. Keep network readiness enabled, because Ollama model downloads
-and firmware refresh depend on it. Hold Space during boot to choose an older generation.
+`systemctl --user --failed`. Keep network readiness enabled because firmware refresh
+depends on it. Hold Space during boot to choose an older generation.
 
 </details>
 
@@ -372,7 +380,7 @@ Then open `http://127.0.0.1:3000` on that computer.
 ## Adding a machine
 
 1. Create `modules/hosts/<name>/` with `_hardware-configuration.nix` from
-   `nixos-generate-config` (keep the `_` prefix), and a `configuration.nix` that defines
+   `nixos-generate-config` (keep the `_` prefix) and a `configuration.nix` that defines
    `flake.nixosConfigurations.<name>`. Import `base`, `desktop`, either `workstation` or
    `laptop`, and any other features you want. Set `networking.hostName`, `my.user`, the
    user's `description` and `system.stateVersion`. Copying an existing host is the easiest
@@ -380,7 +388,7 @@ Then open `http://127.0.0.1:3000` on that computer.
 2. Create `dotfiles/<name>/.config/niri/host.kdl` (required, may be empty) and, if needed,
    `dotfiles/<name>/.config/noctalia/host.toml`.
 
-`make check` builds every host automatically.
+`make check` builds every host.
 
 <details>
 <summary>Recording a README GIF</summary>

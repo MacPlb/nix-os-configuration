@@ -5,8 +5,7 @@ FLAKE  := $(TARGET)\#$(HOST)
 
 # Mirror the repo into $(TARGET), deleting files there that are not in the repo.
 RSYNC_FLAGS := -rlptD --delete --chown=root:root \
-	--exclude=.git --exclude=Makefile --exclude=.codex \
-	--exclude=.claude --exclude=CLAUDE.md \
+	--exclude=.git --exclude=Makefile \
 	--exclude=/result --exclude=__pycache__
 
 .DEFAULT_GOAL := help
