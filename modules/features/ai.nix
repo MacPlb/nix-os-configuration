@@ -4,6 +4,7 @@
     {
       environment.systemPackages = [
         pkgs.unstable.opencode
+        pkgs.unstable.claude-code
       ];
     };
 }

@@ -59,6 +59,13 @@
       # Searchable shell history in a local SQLite database: Ctrl+R (and Up) open the search.
       # Nothing leaves the machine unless you run `atuin login`.
       config.programs.atuin.enable = true;
+      # The module only wires Up/Ctrl+R into bash when programs.bash.enable is set, which this
+      # config leaves at its default (NixOS still uses bash).
+      config.programs.atuin.enableBashIntegration = true;
+      # Bash has no preexec hook, so without this atuin records nothing; must load before `atuin init`.
+      config.programs.bash.interactiveShellInit = lib.mkBefore ''
+        source ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
+      '';
 
       config.environment.systemPackages = with pkgs; [
         # Extra GNU tools; coreutils, grep, sed, tar, less etc. are in the base system.
